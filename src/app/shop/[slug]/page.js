@@ -56,6 +56,7 @@ export async function generateMetadata({ params }) {
       url: `${BASE_URL}/shop/${slug}`,
       siteName: "EtomidatePods.com",
       type: "website",
+      images: product.image ? [{ url: `${BASE_URL}${product.image}`, alt: product.name }] : undefined,
     },
     alternates: {
       canonical: `${BASE_URL}/shop/${slug}`,
@@ -76,5 +77,47 @@ export default async function ProductPage({ params }) {
     );
   }
 
-  return <ProductDetailClient product={product} />;
+  const priceFrom = product.sizes?.[0]?.price || product.price || 0;
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.shortDescription || product.description,
+    image: product.image ? `${BASE_URL}${product.image}` : `${BASE_URL}/logo.svg`,
+    category: product.category,
+    brand: { "@type": "Brand", name: "EtomidatePods" },
+    offers: product.sizes?.length
+      ? product.sizes.map((s) => ({
+          "@type": "Offer",
+          name: `${product.name} — ${s.label}`,
+          price: s.price,
+          priceCurrency: "EUR",
+          availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          url: `${BASE_URL}/shop/${product.slug}`,
+        }))
+      : {
+          "@type": "Offer",
+          price: priceFrom,
+          priceCurrency: "EUR",
+          availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          url: `${BASE_URL}/shop/${product.slug}`,
+        },
+  };
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Shop", item: `${BASE_URL}/shop` },
+      { "@type": "ListItem", position: 3, name: product.name, item: `${BASE_URL}/shop/${product.slug}` },
+    ],
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      <ProductDetailClient product={product} />
+    </>
+  );
 }

@@ -22,7 +22,7 @@ const barlowCondensed = Barlow_Condensed({
 export const metadata = {
   metadataBase: new URL("https://etomidatepods.com"),
   title: {
-    default: "Etomidate Pods — Premium Powder, K-Pods Vape & Liquid | EtomidatePods.com",
+    default: "EtomidatePods — Premium K-Pods, Powder & Liquid | EtomidatePods.com",
     template: "%s | EtomidatePods.com",
   },
   description:
@@ -38,6 +38,11 @@ export const metadata = {
     "etomidate powder for sale",
     "pure etomidate powder",
     "pharmaceutical grade etomidate powder",
+    "etomidate pods",
+    "buy etomidate pods",
+    "etomidatepods",
+    "k pods",
+    "kpods vape",
     "etomidate vape",
     "etomidate vape pods",
     "etomidate K-Pods",
@@ -91,6 +96,26 @@ export const metadata = {
     "16145-71-4 for sale",
     "EtomidatePods",
     "etomidatepods.com",
+    "medetomidine",
+    "medetomidine powder",
+    "buy medetomidine",
+    "medetomidine for sale",
+    "tiletamine",
+    "tiletamine powder",
+    "buy tiletamine",
+    "tiletamine for sale",
+    "spirochlorphine",
+    "spirochlorphine r6890",
+    "spirochlorphine r6890 powder",
+    "buy spirochlorphine",
+    "zombie vape",
+    "piao piao",
+    "etomidate starter kit",
+    "kpod starter kit",
+    "etomidate vape flavours",
+    "grape etomidate",
+    "strawberry mango vape",
+    "etomidate green apple",
     "space oil",
     "buy space oil",
     "space oil vape",
@@ -119,7 +144,7 @@ export const metadata = {
     locale: "en_US",
     url: "https://etomidatepods.com",
     siteName: "EtomidatePods.com",
-    title: "Etomidate Pods — Premium Powder, K-Pods Vape & Liquid",
+    title: "EtomidatePods — Premium K-Pods, Powder & Liquid",
     description:
       "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid. ≥99.8% purity, COA included, discreet worldwide shipping.",
   },
@@ -158,7 +183,28 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${barlow.variable} ${barlowCondensed.variable} h-full antialiased`}
     >
-      <head />
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "EtomidatePods",
+              url: "https://etomidatepods.com",
+              logo: "https://etomidatepods.com/logo.svg",
+              description:
+                "Supplier of lab-tested etomidate products — K-Pods vape, powder and liquid solutions with COA certification.",
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                url: "https://etomidatepods.com/contact",
+              },
+              sameAs: [],
+            }),
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-navy text-bone">
         <ImageProtection />
         <ToastProvider />
