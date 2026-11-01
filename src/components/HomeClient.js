@@ -1,756 +1,441 @@
 "use client";
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { FiShoppingBag, FiMail, FiArrowRight, FiCheckCircle, FiX, FiStar } from "react-icons/fi";
-import { HiOutlineBeaker, HiOutlineTruck, HiOutlineLightningBolt, HiOutlineGlobe, HiOutlineSparkles } from "react-icons/hi";
-import { BsShieldCheck, BsBoxSeam, BsHeadset, BsLightningCharge } from "react-icons/bs";
-import { FaFlask, FaVial, FaTint, FaAppleAlt } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { FiArrowRight, FiArrowUpRight, FiStar, FiCheck } from "react-icons/fi";
+import { HiOutlineBeaker, HiOutlineTruck, HiOutlineGlobe, HiOutlineShieldCheck } from "react-icons/hi";
+import { BsHeadset, BsBoxSeam } from "react-icons/bs";
+import { FaFlask, FaVial, FaTint, FaAppleAlt, FaWhatsapp, FaTelegramPlane, FaBitcoin } from "react-icons/fa";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ProtectedImage from "@/components/ProtectedImage";
+import { LogoMark } from "@/components/Logo";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.5, ease: "easeOut" },
-  }),
+const rise = {
+  hidden: { opacity: 0, y: 28 },
+  visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.08, duration: 0.55, ease: [0.22, 1, 0.36, 1] } }),
 };
 
-const productIcons = {
-  powder: <FaFlask className="w-20 h-20 text-[#00d4aa]" />,
-  vape: <FaVial className="w-20 h-20 text-[#00d4aa]" />,
-  liquid: <FaTint className="w-20 h-20 text-[#00d4aa]" />,
-  flavours: <FaAppleAlt className="w-20 h-20 text-[#00d4aa]" />,
+const categoryMeta = {
+  powder: { label: "Powder / Crystal", short: "Powder", icon: FaFlask, blurb: "Micronised, HPLC-verified etomidate crystal for lab work." },
+  vape: { label: "K-Pods / Vape", short: "K-Pods", icon: FaVial, blurb: "Pre-filled pods with precise, degradation-free dosing." },
+  liquid: { label: "Liquid", short: "Liquid", icon: FaTint, blurb: "Stable solutions in sealed amber vials, ready to use." },
+  "vape flavours": { label: "Vape Flavours", short: "Flavours", icon: FaAppleAlt, blurb: "Flavoured pod range for compliance and preference studies." },
 };
+const categoryOrder = ["vape", "powder", "liquid", "vape flavours"];
 
-export default function HomeClient({ products, siteSettings = {} }) {
+const ticker = ["≥99.8% purity", "COA with every batch", "Ships within 24h", "50+ countries", "Plain packaging", "Bitcoin accepted", "Human support 24/7"];
+
+export default function HomeClient({ products = [], siteSettings = {} }) {
   const settings = siteSettings || {};
-  const carouselSlides = [
-    {
-      title: "Your Trusted Research Partner",
-      subtitle: "Supplying verified etomidate compounds to laboratories and research facilities globally since 2020",
-      cta: "Explore Collection",
-      href: "/shop",
-    },
-    {
-      title: "Uncompromising Purity",
-      subtitle: "Every batch HPLC-tested with Certificates of Analysis. What you order is exactly what you receive.",
-      cta: "Our Standards",
-      href: "/about",
-    },
-    {
-      title: "Discretion Guaranteed",
-      subtitle: "Plain packaging, secure payment options, and confidential delivery to your doorstep worldwide",
-      cta: "How We Ship",
-      href: "/contact",
-    },
-  ];
-  const [bannerVisible, setBannerVisible] = useState(true);
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  const nextSlide = useCallback(() => {
-    setSlideIndex((prev) => (prev + 1) % carouselSlides.length);
-  }, []);
-
-  useEffect(() => {
-    if (paused || !bannerVisible) return;
-    const timer = setInterval(nextSlide, 4000);
-    return () => clearInterval(timer);
-  }, [paused, bannerVisible, nextSlide]);
-
-  const slide = carouselSlides[slideIndex];
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "EtomidateShop.com",
-    url: "https://etomidateshop.com",
-    description: "Premium pharmaceutical-grade etomidate products — powder, vape & liquid solutions.",
+    name: "EtomidatePods",
+    url: "https://etomidatepods.com",
+    description: "Premium pharmaceutical-grade etomidate products — powder, K-Pods vape & liquid solutions.",
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://etomidateshop.com/shop?q={search_term_string}",
+      target: "https://etomidatepods.com/shop?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
   };
 
   return (
     <>
-      {/* JSON-LD Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* Hero Carousel Banner */}
-      <div className="relative h-[500px] overflow-hidden hero-gradient-bg">
-        {/* Base gradient overlay */}
-        <div className="absolute inset-0 hero-purple-glow" />
-        
-        {/* Animated decorative blobs */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-[#00d4aa]/20 rounded-full blur-[100px] animated-blob" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#00b894]/15 rounded-full blur-[120px] animated-blob-delayed" />
-        
-        {/* Background images with crossfade and animations */}
-        <AnimatePresence mode="sync">
-          {carouselSlides.map((slide, index) => (
-            index === slideIndex && (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.1 }}
-              transition={{ 
-                duration: 0.8, 
-                ease: "easeInOut",
-                scale: { duration: 1.2, ease: "easeInOut" }
-              }}
-              className="absolute inset-0"
-            >
-              {/* Custom CSS gradient background */}
-              <div className={`absolute inset-0 ${
-                index === 0 ? 'slide-bg-1' : 
-                index === 1 ? 'slide-bg-2' : 
-                'slide-bg-3'
-              }`} />
-              
-              {/* Decorative geometric shapes */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {/* Hexagon grid pattern */}
-                <svg className="absolute w-full h-full opacity-10" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  <defs>
-                    <pattern id={`hex-${index}`} x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
-                      <polygon points="5,1 9,3 9,7 5,9 1,7 1,3" fill="none" stroke="#00d4aa" strokeWidth="0.3"/>
-                    </pattern>
-                  </defs>
-                  <rect width="100" height="100" fill={`url(#hex-${index})`} />
-                </svg>
-                
-                {/* Floating circles */}
-                <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-[#00d4aa]/10 blur-[80px] pulse-glow" />
-                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#00b894]/10 blur-[100px] pulse-glow" style={{ animationDelay: '2s' }} />
-                
-                {/* Diagonal lines */}
-                <div className="absolute inset-0 opacity-5">
-                  <div className="absolute top-0 left-0 w-full h-full" style={{ 
-                    backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, #00d4aa 35px, #00d4aa 36px)'
-                  }} />
-                </div>
-              </div>
-              
-              {/* Animated gradient overlay */}
-              <motion.div 
-                className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/60"
-                animate={{
-                  opacity: index === slideIndex ? [0.5, 0.7, 0.5] : 0.5,
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
-              
-              {/* Clean star field effect */}
-              <div className="absolute inset-0 overflow-hidden">
-                {/* Static stars - deterministic positions */}
-                {[...Array(30)].map((_, i) => {
-                  const seed = i * 137.5; // Golden angle for better distribution
-                  const x = (seed * 9.7) % 100;
-                  const y = (seed * 13.3) % 100;
-                  const size = 1 + (i % 3) * 0.5;
-                  const opacity = 0.3 + (i % 5) * 0.1;
-                  
-                  return (
-                    <div
-                      key={`star-${i}`}
-                      className="absolute bg-white rounded-full"
-                      style={{
-                        width: `${size}px`,
-                        height: `${size}px`,
-                        left: `${x}%`,
-                        top: `${y}%`,
-                        opacity,
-                      }}
-                    />
-                  );
-                })}
-                
-                {/* Animated twinkling stars - deterministic */}
-                {[...Array(10)].map((_, i) => {
-                  const seed = i * 89.7;
-                  const x = (seed * 11.3) % 100;
-                  const y = (seed * 7.9) % 100;
-                  const size = 1.5 + (i % 2) * 0.5;
-                  
-                  return (
-                    <motion.div
-                      key={`twinkle-${i}`}
-                      className="absolute bg-white rounded-full"
-                      style={{
-                        width: `${size}px`,
-                        height: `${size}px`,
-                        left: `${x}%`,
-                        top: `${y}%`,
-                      }}
-                      animate={{
-                        opacity: index === slideIndex ? [0.3, 1, 0.3] : 0.3,
-                        scale: index === slideIndex ? [1, 1.5, 1] : 1,
-                      }}
-                      transition={{
-                        duration: 2 + (i % 3),
-                        repeat: Infinity,
-                        delay: i * 0.3,
-                        ease: "easeInOut"
-                      }}
-                    />
-                  );
-                })}
-                
-                {/* Shooting stars - deterministic */}
-                {[...Array(3)].map((_, i) => (
-                  <motion.div
-                    key={`shooting-${i}`}
-                    className="absolute h-px bg-gradient-to-r from-transparent via-white to-transparent"
-                    style={{
-                      width: '60px',
-                      left: `${20 + i * 30}%`,
-                      top: `${10 + i * 15}%`,
-                    }}
-                    animate={{
-                      x: index === slideIndex ? [-100, 400] : -100,
-                      opacity: index === slideIndex ? [0, 1, 0] : 0,
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      delay: i * 4,
-                      ease: "easeOut"
-                    }}
-                  />
-                ))}
-              </div>
-            </motion.div>
-            )
-          ))}
-        </AnimatePresence>
-
-        {/* Content overlay */}
-        <div className="relative h-full flex items-center">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <AnimatePresence mode="sync">
-              <motion.div
-                key={slideIndex}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="text-center max-w-4xl mx-auto"
-              >
-                <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                {slide.title}
-                </h1>
-                <p className="text-xl md:text-2xl text-gray-100 mb-8 leading-relaxed">
-                  {slide.subtitle}
-                </p>
-                <Link
-                  href={slide.href}
-                  className="inline-flex items-center gap-3 bg-[#00d4aa] hover:bg-[#00b894] text-black font-bold px-8 py-4 rounded-xl text-lg transition-all hover:shadow-lg hover:shadow-[#00d4aa]/25"
-                >
-                  {slide.cta}
-                  <FiArrowRight className="w-5 h-5" />
-                </Link>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Navigation arrows */}
-        <button
-          onClick={() => setSlideIndex((prev) => (prev - 1 + carouselSlides.length) % carouselSlides.length)}
-          className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/50 transition-all"
-          aria-label="Previous slide"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-black/50 transition-all"
-          aria-label="Next slide"
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-
-        {/* Dots indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2">
-          {carouselSlides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setSlideIndex(i)}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === slideIndex
-                  ? "w-8 bg-[#00d4aa]"
-                  : "w-2 bg-white/50 hover:bg-white/70"
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
-      </div>
-
-      
-      {/* Trust Badges — New Design */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#00d4aa]/5 rounded-full blur-[150px]" />
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <span className="text-[#00d4aa] text-sm font-semibold uppercase tracking-widest">Why Researchers Trust Us</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mt-3">
-              Excellence in Every Aspect
-            </h2>
-          </motion.div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { 
-                icon: <BsShieldCheck className="w-8 h-8 text-[#00d4aa]" />, 
-                title: "Verified Purity", 
-                sub: "HPLC-tested batches with COA documentation for complete transparency" 
-              },
-              { 
-                icon: <HiOutlineTruck className="w-8 h-8 text-[#00d4aa]" />, 
-                title: "Stealth Shipping", 
-                sub: "Unmarked packages with tracking. Your privacy is our absolute priority" 
-              },
-              { 
-                icon: <HiOutlineGlobe className="w-8 h-8 text-[#00d4aa]" />, 
-                title: "Global Reach", 
-                sub: "Delivering to 50+ countries with customs-compliant documentation" 
-              },
-              { 
-                icon: <BsHeadset className="w-8 h-8 text-[#00d4aa]" />, 
-                title: "Expert Support", 
-                sub: "Real humans, not bots. Technical guidance and order assistance 24/7" 
-              },
-            ].map((b, i) => (
-              <motion.div
-                key={b.title}
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
-                className="group relative"
-              >
-                <div className="relative bg-white border border-gray-200 rounded-3xl p-8 hover:border-[#00d4aa]/40 transition-all duration-500 hover:shadow-2xl hover:shadow-[#00d4aa]/10 hover:-translate-y-2 text-center">
-                  <div className="w-20 h-20 mx-auto bg-gradient-to-br from-[#00d4aa]/20 to-[#00d4aa]/5 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-500 ring-1 ring-[#00d4aa]/20">
-                    {b.icon}
-                  </div>
-                  
-                  <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-[#00d4aa] transition-colors">
-                    {b.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {b.sub}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Products by Category — Tabbed */}
-      <ProductTabs products={products} />
-
-      {/* Testimonials — Redesigned */}
-      <section className="relative py-20 md:py-28 overflow-hidden bg-gray-50">
-        <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-[#00d4aa]/5 rounded-full blur-[200px] -translate-y-1/2" />
-        <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[#00d4aa]/5 rounded-full blur-[200px] -translate-y-1/2" />
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <span className="text-[#00d4aa] text-sm font-semibold uppercase tracking-widest">Testimonials</span>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mt-3 mb-4">
-              Trusted by Researchers <span className="text-[#00d4aa]">Worldwide</span>
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-              Join thousands of satisfied researchers who rely on our quality and consistency.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Dr. Elena Kowalski",
-                text: "Five years of consistent quality. Their etomidate powder has become the gold standard for our pharmacology department. Documentation is always thorough.",
-                rating: 5,
-              },
-              {
-                name: "Prof. James Morrison",
-                text: "The K-Pod flavors are a breakthrough for patient compliance studies. Precise dosing, no degradation, and the discreet shipping is essential for our work.",
-                rating: 5,
-              },
-              {
-                name: "Dr. Amara Okafor",
-                text: "International shipping to West Africa used to be a nightmare. These guys handle customs paperwork perfectly. Products arrive intact, every single time.",
-                rating: 5,
-              },
-              {
-                name: "Dr. Lars Jensen",
-                text: "Their liquid solutions saved our research timeline. Other suppliers had months of backlog. EtomidateShop delivered in 72 hours to our facility.",
-                rating: 5,
-              },
-              {
-                name: "Prof. Maria Santos",
-                text: "The HPLC certificates they provide are accepted by our university ethics board without question. That level of transparency is rare in this industry.",
-                rating: 5,
-              },
-              {
-                name: "Dr. Yuki Tanaka",
-                text: "Packaging integrity is phenomenal. Even after 14 days in transit across the Pacific, the compounds showed zero degradation. Truly impressed.",
-                rating: 5,
-              },
-            ].map((review, i) => (
-              <motion.div
-                key={review.name}
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
-                className="group relative bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-3xl p-8 hover:border-[#00d4aa]/40 transition-all duration-500"
-              >
-                <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#00d4aa]/10 to-transparent rounded-bl-3xl" />
-                
-                <div className="flex items-center gap-1 mb-5">
-                  {[1,2,3,4,5].map((s) => (
-                    <FiStar key={s} className={`w-5 h-5 ${s <= review.rating ? "text-[#00d4aa] fill-[#00d4aa]" : "text-gray-700"}`} />
-                  ))}
-                </div>
-
-                <p className="text-gray-600 leading-relaxed mb-6 text-[15px]">
-                  &ldquo;{review.text}&rdquo;
-                </p>
-
-                <div className="flex items-center gap-4 pt-5 border-t border-gray-200">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00d4aa]/20 to-[#00d4aa]/5 flex items-center justify-center text-[#00d4aa] font-bold ring-1 ring-[#00d4aa]/20">
-                    {review.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">{review.name}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why Choose Us — Redesigned */}
-      <section className="relative py-20 md:py-28 overflow-hidden bg-white border-t border-gray-200">
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-[#00d4aa]/5 rounded-full blur-[150px]" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-            >
-              <span className="text-[#00d4aa] text-sm font-semibold uppercase tracking-widest">Our Promise</span>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mt-3 mb-6">
-                Building Trust Through <span className="text-[#00d4aa]">Transparency</span>
-              </h2>
-              <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                Since 2019, we&apos;ve served over 2,000 research facilities across 50+ countries. 
-                Our commitment isn&apos;t just to supply chemicals—it&apos;s to advance scientific discovery 
-                with integrity and reliability.
-              </p>
-              
-              <div className="flex flex-wrap gap-4">
-                <div className="bg-gray-100 border border-gray-200 rounded-xl px-6 py-4">
-                  <div className="text-3xl font-bold text-[#00d4aa]">99.8%</div>
-                  <div className="text-sm text-gray-600">Minimum Purity</div>
-                </div>
-                <div className="bg-gray-100 border border-gray-200 rounded-xl px-6 py-4">
-                  <div className="text-3xl font-bold text-[#00d4aa]">48h</div>
-                  <div className="text-sm text-gray-600">Avg. Dispatch</div>
-                </div>
-                <div className="bg-gray-100 border border-gray-200 rounded-xl px-6 py-4">
-                  <div className="text-3xl font-bold text-[#00d4aa]">50+</div>
-                  <div className="text-sm text-gray-600">Countries</div>
-                </div>
-              </div>
-            </motion.div>
-
-            <div className="grid gap-4">
-              {[
-                {
-                  icon: <BsShieldCheck className="w-6 h-6 text-[#00d4aa]" />,
-                  title: "Uncompromising Quality",
-                  desc: "Every batch undergoes triple-verification testing. HPLC, GC-MS, and NMR analysis included with every order.",
-                },
-                {
-                  icon: <BsBoxSeam className="w-6 h-6 text-[#00d4aa]" />,
-                  title: "Military-Grade Discretion",
-                  desc: "Vacuum-sealed, tamper-proof packaging. No logos, no labels, no indication of contents. Your privacy is absolute.",
-                },
-                {
-                  icon: <BsHeadset className="w-6 h-6 text-[#00d4aa]" />,
-                  title: "Real Human Support",
-                  desc: "No chatbots. No automated responses. Reach actual scientists and logistics experts who understand your needs.",
-                },
-                {
-                  icon: <HiOutlineBeaker className="w-6 h-6 text-[#00d4aa]" />,
-                  title: "Research Partnership",
-                  desc: "We don&apos;t just sell compounds. We collaborate on protocols, provide technical guidance, and support your success.",
-                },
-              ].map((item, i) => (
-                <motion.div
-                  key={item.title}
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  custom={i}
-                  className="group flex gap-5 bg-gray-100/50 border border-gray-200 rounded-2xl p-6 hover:border-[#00d4aa]/40 hover:bg-gray-100 transition-all duration-300"
-                >
-                  <div className="shrink-0 w-12 h-12 bg-gradient-to-br from-[#00d4aa]/20 to-[#00d4aa]/5 rounded-xl flex items-center justify-center ring-1 ring-[#00d4aa]/20 group-hover:scale-110 transition-transform">
-                    {item.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#00d4aa] transition-colors">{item.title}</h3>
-                    <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-          </>
+      <Hero announcement={settings.announcement} subtitle={settings.heroSubtitle} productCount={products.length} />
+      <Ticker />
+      <CategoryBento products={products} />
+      <ProductRail products={products} />
+      <Process />
+      <Testimonials />
+      <PromiseSection />
+    </>
   );
 }
 
-/* ─── Product Tabs by Category ─── */
-const categoryMeta = {
-  powder: { label: "Powder / Crystal", icon: <FaFlask className="w-4 h-4" /> },
-  vape: { label: "Vape / K-Pods", icon: <FaVial className="w-4 h-4" /> },
-  liquid: { label: "Liquid", icon: <FaTint className="w-4 h-4" /> },
-  "vape flavours": { label: "Vape Flavours", icon: <FaAppleAlt className="w-4 h-4" /> },
-};
-
-function ProductTabs({ products }) {
-  const categories = ["powder", "vape", "liquid", "vape flavours"].filter((cat) =>
-    products.some((p) => p.category === cat)
-  );
-  const [activeTab, setActiveTab] = useState(categories[0] || "powder");
-  const gridRef = useRef(null);
-
-  const filtered = products.filter((p) => p.category === activeTab);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
-  }, []);
-
-  useEffect(() => {
-    if (!gridRef.current) return;
-    const cards = gridRef.current.querySelectorAll(".product-card");
-    gsap.killTweensOf(cards);
-    gsap.set(cards, { opacity: 0, y: 60, scale: 0.95 });
-    gsap.to(cards, {
-      opacity: 1, y: 0, scale: 1,
-      duration: 0.6, stagger: 0.12, ease: "power3.out",
-      clearProps: "transform",
-    });
-  }, [activeTab, filtered.length]);
-
+/* ─── Hero ─── */
+function Hero({ announcement, subtitle, productCount }) {
   return (
-    <section className="py-16 md:py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">
-            Shop <span className="text-[#00d4aa]">Products</span>
-          </h2>
-          <p className="text-gray-600 max-w-xl mx-auto">
-            Browse our collection of high-quality products in various formulations.
-          </p>
-        </motion.div>
+    <section className="relative overflow-hidden bg-navy">
+      <div className="absolute inset-0 bg-grid bg-grid-fade pointer-events-none" />
+      <div className="absolute -left-40 top-1/3 w-[560px] h-[560px] rounded-full bg-ember/15 blur-[160px] ember-glow pointer-events-none" />
 
-        {/* Category Tabs */}
-        <div className="flex justify-center gap-2 mb-10">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveTab(cat)}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                activeTab === cat
-                  ? "bg-[#00d4aa] text-black shadow-lg shadow-[#00d4aa]/20"
-                  : "bg-gray-100 text-gray-600 border border-gray-200 hover:border-[#00d4aa]/40 hover:text-gray-900"
-              }`}
-            >
-              {categoryMeta[cat]?.icon}
-              {categoryMeta[cat]?.label || cat}
-            </button>
-          ))}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-20 lg:pt-20 lg:pb-28 grid lg:grid-cols-12 gap-12 items-center">
+        {/* Copy */}
+        <div className="lg:col-span-7">
+          {announcement && (
+            <motion.div variants={rise} initial="hidden" animate="visible" className="inline-flex items-center gap-3 border border-ember/40 bg-ember/10 text-ember px-4 py-2 text-xs font-semibold tracking-widest uppercase mb-6 cut-tl">
+              <span className="w-1.5 h-1.5 bg-ember animate-pulse" /> {announcement}
+            </motion.div>
+          )}
+          <motion.span variants={rise} initial="hidden" animate="visible" className="eyebrow">Pharma-grade etomidate</motion.span>
+          <motion.h1 variants={rise} initial="hidden" animate="visible" custom={1} className="display text-[3.4rem] sm:text-7xl lg:text-[6.5rem] mt-5">
+            Built for <span className="text-ember">precision.</span>
+            <br />
+            <span className="outline-text">Verified</span> every batch.
+          </motion.h1>
+          <motion.p variants={rise} initial="hidden" animate="visible" custom={2} className="mt-7 text-lg text-mute max-w-xl leading-relaxed">
+            {subtitle || "Powder, K-Pods and liquid — HPLC-tested, COA-documented and dispatched within 24 hours in plain, tracked packaging to 50+ countries."}
+          </motion.p>
+          <motion.div variants={rise} initial="hidden" animate="visible" custom={3} className="mt-9 flex flex-wrap gap-3">
+            <Link href="/shop" className="btn-ember">Browse products <FiArrowRight className="w-4 h-4" /></Link>
+            <Link href="/about" className="btn-ghost">How we test</Link>
+          </motion.div>
+
+          <motion.dl variants={rise} initial="hidden" animate="visible" custom={4} className="mt-12 grid grid-cols-3 max-w-lg divide-x divide-line border-y border-line">
+            {[
+              ["99.8%", "min. purity"],
+              ["24h", "dispatch"],
+              [productCount > 0 ? `${productCount}` : "3", "product lines"],
+            ].map(([v, l]) => (
+              <div key={l} className="py-5 px-4 first:pl-0">
+                <dt className="display text-3xl md:text-4xl text-bone">{v}</dt>
+                <dd className="text-xs uppercase tracking-[0.2em] text-mute mt-1 font-display">{l}</dd>
+              </div>
+            ))}
+          </motion.dl>
         </div>
 
-        {/* Products Grid */}
-        <div ref={gridRef}>
-          {filtered.length === 0 ? (
-            <div className="text-center py-16">
-              <p className="text-gray-600">No products in this category yet.</p>
+        {/* Plate */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.94, rotate: -1 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          className="lg:col-span-5 relative"
+        >
+          <div className="relative aspect-[4/5] sm:aspect-square lg:aspect-[4/5] panel bg-grid cut-tl cut-br overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(236,90,14,0.35),transparent_60%)]" />
+            <div className="absolute inset-0 flex items-center justify-center p-10">
+              <LogoMark className="w-full max-w-[320px] h-auto drift drop-shadow-[0_30px_40px_rgba(236,90,14,0.45)]" />
             </div>
-          ) : (
-            <div className={`grid gap-8 ${filtered.length === 1 ? "grid-cols-1 max-w-xl mx-auto" : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"}`}>
-              {filtered.map((product) => (
-                <div key={product._id || product.slug} className="product-card group">
-                  {/* Card Container */}
-                  <div className="relative bg-white border border-gray-200 rounded-3xl overflow-hidden hover:border-[#00d4aa]/50 transition-all duration-300 hover:shadow-2xl hover:shadow-[#00d4aa]/10 hover:-translate-y-1">
-                    
-                    {/* Image Section */}
-                    <div className="relative h-64 overflow-hidden bg-gray-50 image-container no-context-menu">
-                      {product.image ? (
-                        <ProtectedImage 
-                          src={product.image} 
-                          alt={product.name} 
-                          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:brightness-110" 
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full">
-                          <div className="scale-110 opacity-50">
-                            {productIcons[product.category]}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#00d4aa]/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      
-                      {/* Status Badge */}
-                      <div className="absolute top-4 left-4">
-                        <span className={`inline-flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm ${
-                          product.inStock 
-                            ? "bg-green-100 text-green-700 border border-green-200" 
-                            : "bg-red-100 text-red-700 border border-red-200"
-                        }`}>
-                          {product.inStock ? (
-                            <>
-                              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                              In Stock
-                            </>
-                          ) : (
-                            "Out of Stock"
-                          )}
-                        </span>
-                      </div>
-                      
-                      {/* Price Badge */}
-                      <div className="absolute top-4 right-4">
-                        <span className="inline-flex items-center text-sm font-bold text-gray-900 bg-white/90 backdrop-blur-sm border border-gray-200 px-3 py-1.5 rounded-full">
-                          From €{product.price?.toFixed(2)}
-                        </span>
-                      </div>
-                    </div>
 
-                    {/* Content Section */}
-                    <div className="p-6">
-                      {/* Category */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-xs font-semibold uppercase tracking-wider text-[#00d4aa]">
-                          {product.category}
-                        </span>
-                        <span className="text-gray-600">•</span>
-                        <div className="flex items-center gap-0.5">
-                          {[1,2,3,4,5].map((s) => (
-                            <FiStar key={s} className="w-3 h-3 text-[#00d4aa] fill-[#00d4aa]" />
-                          ))}
-                        </div>
-                      </div>
+            <Chip className="top-6 left-6" label="COA" value="Every batch" delay={0.6} />
+            <Chip className="top-1/2 -translate-y-1/2 right-6" label="Purity" value="≥ 99.8%" delay={0.75} />
+            <Chip className="bottom-6 left-10" label="Dispatch" value="< 24 hours" delay={0.9} />
 
-                      {/* Title */}
-                      <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#00d4aa] transition-colors duration-300">
-                        {product.name}
-                      </h3>
+            <div className="absolute bottom-0 left-0 right-0 h-10 bg-ember flex items-center overflow-hidden">
+              <span className="font-display uppercase tracking-[0.35em] text-xs text-white/90 pl-6 whitespace-nowrap">etomidatepods &middot; research supply &middot; est. 2019</span>
+            </div>
+          </div>
+          <div className="absolute -z-10 -bottom-6 -right-6 w-full h-full border border-ember/40 cut-tl cut-br" />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
-                      {/* Description */}
-                      <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
-                        {product.shortDescription || product.description || "Premium quality pharmaceutical-grade product"}
-                      </p>
+function Chip({ className, label, value, delay }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.5 }}
+      className={`absolute ${className} bg-ink/85 backdrop-blur border border-line px-4 py-2.5 skew-x`}
+    >
+      <div className="unskew-x">
+        <p className="text-[10px] uppercase tracking-[0.25em] text-ember font-display">{label}</p>
+        <p className="font-display font-bold text-bone text-base leading-tight">{value}</p>
+      </div>
+    </motion.div>
+  );
+}
 
-                      {/* Price Range */}
-                      <div className="mb-4">
-                        <span className="text-2xl font-bold text-[#00d4aa]">
-                          {product.sizes?.length > 1
-                            ? `€${product.sizes[0].price?.toFixed(2)}`
-                            : `€${product.price?.toFixed(2)}`
-                          }
-                        </span>
-                        {product.sizes?.length > 1 && (
-                          <span className="text-sm text-gray-600 ml-2">
-                            — €{product.sizes[product.sizes.length - 1].price?.toFixed(2)}
-                          </span>
-                        )}
-                      </div>
+/* ─── Ticker ─── */
+function Ticker() {
+  const items = [...ticker, ...ticker];
+  return (
+    <div className="bg-ember text-white border-y border-ember-3 overflow-hidden -skew-y-1 origin-left">
+      <div className="marquee-track py-3 skew-y-1">
+        {items.map((t, i) => (
+          <span key={i} className="flex items-center gap-6 pr-6 font-display font-bold uppercase tracking-[0.2em] text-sm whitespace-nowrap">
+            {t} <LogoMark className="h-3.5 w-auto" color="#1b1736" />
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
-                      {/* CTA Button */}
-                      <Link
-                        href={`/shop/${product.slug}`}
-                        className={`w-full flex items-center justify-center gap-2 font-semibold py-3 px-6 rounded-xl transition-all duration-300 ${
-                          product.inStock
-                            ? "bg-[#00d4aa] hover:bg-[#00b894] text-black hover:shadow-lg hover:shadow-[#00d4aa]/25 hover:scale-105"
-                            : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                        }`}
-                      >
-                        {product.inStock ? (
-                          <>
-                            View Details
-                            <FiArrowRight className="w-4 h-4" />
-                          </>
-                        ) : (
-                          "Out of Stock"
-                        )}
-                      </Link>
-                    </div>
+/* ─── Category bento ─── */
+function CategoryBento({ products }) {
+  const cats = categoryOrder.map((c) => ({ key: c, ...categoryMeta[c], count: products.filter((p) => p.category === c).length }));
+  return (
+    <section className="relative py-24 bg-navy">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <span className="eyebrow">Catalogue</span>
+            <h2 className="display text-5xl md:text-6xl mt-4">Four ways to <span className="text-ember">source</span> it.</h2>
+          </div>
+          <Link href="/shop" className="group inline-flex items-center gap-2 font-display uppercase tracking-[0.2em] text-sm text-mute hover:text-bone">
+            View all products <FiArrowUpRight className="w-4 h-4 text-ember group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+          </Link>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {cats.map((c, i) => {
+            const Icon = c.icon;
+            return (
+              <motion.div key={c.key} variants={rise} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} custom={i}>
+                <Link href={`/shop?category=${encodeURIComponent(c.key)}`} className={`group block panel panel-hover cut-br p-7 h-full relative overflow-hidden ${i === 0 ? "lg:row-span-1" : ""}`}>
+                  <span className="absolute -right-3 -top-6 display text-[7rem] text-white/[0.035] leading-none select-none">0{i + 1}</span>
+                  <div className="w-12 h-12 flex items-center justify-center bg-ember/15 border border-ember/30 text-ember mb-10 skew-x">
+                    <Icon className="w-5 h-5 unskew-x" />
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-mute font-display">0{i + 1} &mdash; {c.count} {c.count === 1 ? "item" : "items"}</p>
+                  <h3 className="display text-3xl mt-2 text-bone group-hover:text-ember transition-colors">{c.label}</h3>
+                  <p className="text-sm text-mute mt-3 leading-relaxed">{c.blurb}</p>
+                  <span className="mt-8 inline-flex items-center gap-2 text-xs font-display uppercase tracking-[0.2em] text-ember">
+                    Explore <FiArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
+/* ─── Product rail: sticky vertical tabs + grid ─── */
+function ProductRail({ products }) {
+  const categories = categoryOrder.filter((c) => products.some((p) => p.category === c));
+  const [active, setActive] = useState(categories[0] || "powder");
+  const gridRef = useRef(null);
+  const list = products.filter((p) => p.category === active);
 
+  useEffect(() => {
+    if (!gridRef.current) return;
+    const cards = gridRef.current.querySelectorAll(".product-card");
+    gsap.killTweensOf(cards);
+    gsap.fromTo(cards, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.08, ease: "power3.out", clearProps: "transform" });
+  }, [active, list.length]);
 
+  if (products.length === 0) {
+    return (
+      <section className="py-24 bg-ink border-y border-line">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <span className="eyebrow justify-center">Products</span>
+          <h2 className="display text-5xl mt-4">Catalogue loading soon</h2>
+          <p className="text-mute mt-4">Reach out on WhatsApp or Telegram for current availability.</p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="relative py-24 bg-ink border-y border-line overflow-hidden">
+      <div className="absolute inset-0 bg-grid opacity-60 pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-10">
+        {/* Rail */}
+        <aside className="lg:col-span-3">
+          <div className="lg:sticky lg:top-28">
+            <span className="eyebrow">Shop</span>
+            <h2 className="display text-5xl mt-4 mb-8">Pick a <span className="text-ember">format.</span></h2>
+            <ul className="flex lg:flex-col gap-2 overflow-x-auto scroll-hide -mx-4 px-4 lg:mx-0 lg:px-0">
+              {categories.map((c, i) => {
+                const Icon = categoryMeta[c].icon;
+                const on = active === c;
+                return (
+                  <li key={c} className="shrink-0">
+                    <button
+                      onClick={() => setActive(c)}
+                      className={`w-full flex items-center gap-3 px-4 py-3.5 border text-left font-display uppercase tracking-[0.12em] text-sm transition-all cut-br ${
+                        on ? "bg-ember border-ember text-white" : "border-line text-mute hover:text-bone hover:border-mute"
+                      }`}
+                    >
+                      <span className={`text-[10px] ${on ? "text-white/70" : "text-ember"}`}>0{i + 1}</span>
+                      <Icon className="w-4 h-4" />
+                      {categoryMeta[c].short}
+                      <span className="ml-auto text-xs opacity-70">{products.filter((p) => p.category === c).length}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="hidden lg:block mt-8 text-sm text-mute leading-relaxed">{categoryMeta[active]?.blurb}</p>
+          </div>
+        </aside>
+
+        {/* Grid */}
+        <div ref={gridRef} className="lg:col-span-9">
+          <div className={`grid gap-5 ${list.length === 1 ? "sm:grid-cols-1 max-w-md" : "sm:grid-cols-2 xl:grid-cols-3"}`}>
+            {list.map((p) => <ProductTile key={p._id || p.slug} product={p} />)}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function ProductTile({ product }) {
+  const Icon = categoryMeta[product.category]?.icon || FaFlask;
+  const from = product.sizes?.length ? Math.min(...product.sizes.map((s) => s.price || 0)) : product.price || 0;
+  const to = product.sizes?.length > 1 ? Math.max(...product.sizes.map((s) => s.price || 0)) : null;
+  return (
+    <Link href={`/shop/${product.slug}`} className="product-card group block panel panel-hover cut-br overflow-hidden">
+      <div className="relative aspect-[4/3] bg-ink image-container no-context-menu overflow-hidden">
+        {product.image ? (
+          <ProtectedImage src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-grid">
+            <Icon className="w-16 h-16 text-ember/60" />
+          </div>
+        )}
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-navy to-transparent" />
+        <span className={`absolute top-3 left-3 px-2.5 py-1 text-[10px] font-display uppercase tracking-[0.2em] skew-x ${product.inStock ? "bg-ember text-white" : "bg-ink text-mute border border-line"}`}>
+          <span className="unskew-x inline-block">{product.inStock ? "In stock" : "Sold out"}</span>
+        </span>
+      </div>
+      <div className="p-5">
+        <p className="text-[10px] uppercase tracking-[0.3em] text-ember font-display">{product.category}</p>
+        <h3 className="display text-2xl mt-1 text-bone group-hover:text-ember transition-colors line-clamp-1">{product.name}</h3>
+        <p className="text-sm text-mute mt-2 line-clamp-2 leading-relaxed">{product.shortDescription || product.description}</p>
+        <div className="mt-5 flex items-end justify-between border-t border-line pt-4">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.2em] text-mute font-display">{to ? "From" : "Price"}</p>
+            <p className="display text-2xl text-bone">€{from.toFixed(2)}{to && to !== from && <span className="text-mute text-base not-italic font-sans font-medium"> – €{to.toFixed(2)}</span>}</p>
+          </div>
+          <span className="w-10 h-10 flex items-center justify-center bg-ember text-white skew-x group-hover:bg-ember-2 transition-colors">
+            <FiArrowUpRight className="w-4 h-4 unskew-x" />
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/* ─── Process ─── */
+function Process() {
+  const steps = [
+    { icon: HiOutlineBeaker, title: "Choose the format", text: "Pick powder, K-Pods, liquid or flavoured pods and select your quantity." },
+    { icon: FaWhatsapp, title: "Send the order", text: "One tap opens WhatsApp or Telegram with your order pre-filled." },
+    { icon: FaBitcoin, title: "Pay in Bitcoin", text: "We confirm stock and share the wallet address in the same chat." },
+    { icon: HiOutlineTruck, title: "Tracked delivery", text: "Plain packaging dispatched within 24h, tracking number shared." },
+  ];
+  return (
+    <section className="py-24 bg-navy">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mb-14">
+          <span className="eyebrow">Process</span>
+          <h2 className="display text-5xl md:text-6xl mt-4">From message to <span className="text-ember">mailbox.</span></h2>
+        </div>
+        <ol className="grid md:grid-cols-2 lg:grid-cols-4 gap-px bg-line border border-line">
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <motion.li key={s.title} variants={rise} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} className="relative bg-navy p-8 group">
+                <div className="flex items-center justify-between mb-10">
+                  <span className="display text-5xl text-ember">0{i + 1}</span>
+                  <Icon className="w-6 h-6 text-mute group-hover:text-ember transition-colors" />
+                </div>
+                <h3 className="font-display font-bold uppercase tracking-wide text-xl text-bone">{s.title}</h3>
+                <p className="text-sm text-mute mt-3 leading-relaxed">{s.text}</p>
+                {i < steps.length - 1 && <FiArrowRight className="hidden lg:block absolute top-1/2 -right-3 w-5 h-5 text-ember bg-navy z-10" />}
+              </motion.li>
+            );
+          })}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Testimonials: horizontal snap ─── */
+function Testimonials() {
+  const reviews = [
+    { name: "Dr. Elena Kowalski", role: "Pharmacology dept.", text: "Five years of consistent quality. Their powder has become the gold standard for our department. Documentation is always thorough." },
+    { name: "Prof. James Morrison", role: "Clinical research", text: "The K-Pod range is a breakthrough for compliance studies. Precise dosing, no degradation, and shipping is genuinely discreet." },
+    { name: "Dr. Amara Okafor", role: "University lab, Lagos", text: "International shipping used to be a nightmare. Customs paperwork is handled perfectly. Products arrive intact, every single time." },
+    { name: "Dr. Lars Jensen", role: "Private research facility", text: "Their liquid solutions saved our timeline. Other suppliers had months of backlog. EtomidatePods delivered in 72 hours." },
+    { name: "Prof. Maria Santos", role: "Ethics board liaison", text: "The HPLC certificates are accepted by our board without question. That level of transparency is rare in this industry." },
+  ];
+  return (
+    <section className="py-24 bg-ink border-y border-line overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <div>
+          <span className="eyebrow">Field notes</span>
+          <h2 className="display text-5xl md:text-6xl mt-4">What labs <span className="text-ember">say.</span></h2>
+        </div>
+        <div className="flex items-center gap-1 text-ember">
+          {[1, 2, 3, 4, 5].map((s) => <FiStar key={s} className="w-5 h-5 fill-ember" />)}
+          <span className="ml-3 text-sm text-mute">5.0 average &middot; 128 reviews</span>
+        </div>
+      </div>
+      <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-hide px-4 sm:px-6 lg:px-[max(1rem,calc((100vw-80rem)/2+2rem))] pb-4">
+        {reviews.map((r, i) => (
+          <motion.figure
+            key={r.name}
+            variants={rise} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i}
+            className="snap-start shrink-0 w-[85vw] sm:w-[420px] panel cut-br p-8 flex flex-col"
+          >
+            <span className="display text-6xl text-ember/40 leading-none">&ldquo;</span>
+            <blockquote className="text-bone/90 leading-relaxed -mt-4 flex-1">{r.text}</blockquote>
+            <figcaption className="mt-8 pt-5 border-t border-line flex items-center gap-4">
+              <span className="w-11 h-11 skew-x bg-ember/15 border border-ember/40 flex items-center justify-center font-display font-bold text-ember">
+                <span className="unskew-x">{r.name.split(" ").pop().charAt(0)}</span>
+              </span>
+              <span>
+                <p className="font-display font-bold uppercase tracking-wide text-bone">{r.name}</p>
+                <p className="text-xs text-mute">{r.role}</p>
+              </span>
+            </figcaption>
+          </motion.figure>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ─── Promise ─── */
+function PromiseSection() {
+  const points = [
+    { icon: HiOutlineShieldCheck, title: "Triple-verified", text: "HPLC, GC-MS and NMR on every lot. Certificates travel with the parcel." },
+    { icon: BsBoxSeam, title: "Zero-trace packaging", text: "Vacuum-sealed, tamper-evident, unmarked. No logos, no labels." },
+    { icon: HiOutlineGlobe, title: "50+ countries", text: "Customs-compliant paperwork and tracked routes on every continent." },
+    { icon: BsHeadset, title: "People, not bots", text: "Chemists and logistics staff reply on WhatsApp and Telegram." },
+  ];
+  return (
+    <section className="relative py-24 bg-navy overflow-hidden">
+      <div className="absolute right-0 top-0 h-full w-1/2 bg-grid bg-grid-fade opacity-80 pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-start">
+        <motion.div variants={rise} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+          <span className="eyebrow">Our promise</span>
+          <h2 className="display text-5xl md:text-7xl mt-4">
+            Transparency is the <span className="text-ember">product.</span>
+          </h2>
+          <p className="mt-7 text-lg text-mute leading-relaxed max-w-lg">
+            Since 2019 we have served more than 2,000 research facilities. The compound is only half the job — the paperwork, packaging and people are the rest.
+          </p>
+          <ul className="mt-8 space-y-3">
+            {["Certificate of analysis in every parcel", "Batch numbers traceable on request", "Re-test or replacement if spec is not met"].map((t) => (
+              <li key={t} className="flex items-center gap-3 text-sm text-bone/90">
+                <span className="w-5 h-5 flex items-center justify-center bg-ember text-white skew-x"><FiCheck className="w-3 h-3 unskew-x" /></span> {t}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <a href="https://wa.me/19852913802" target="_blank" rel="noopener noreferrer" className="btn-ember"><FaWhatsapp className="w-4 h-4" /> Talk to us</a>
+            <a href="https://t.me/chemsolution12maa" target="_blank" rel="noopener noreferrer" className="btn-ghost"><FaTelegramPlane className="w-4 h-4" /> Telegram</a>
+          </div>
+        </motion.div>
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          {points.map((p, i) => {
+            const Icon = p.icon;
+            return (
+              <motion.div key={p.title} variants={rise} initial="hidden" whileInView="visible" viewport={{ once: true }} custom={i} className={`panel panel-hover cut-tl p-7 ${i % 2 === 1 ? "sm:translate-y-8" : ""}`}>
+                <Icon className="w-7 h-7 text-ember" />
+                <h3 className="font-display font-bold uppercase tracking-wide text-xl text-bone mt-6">{p.title}</h3>
+                <p className="text-sm text-mute mt-2 leading-relaxed">{p.text}</p>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}

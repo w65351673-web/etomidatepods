@@ -1,115 +1,158 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
-import { FiShoppingBag, FiHome, FiInfo, FiMail, FiChevronDown } from "react-icons/fi";
+import { HiOutlineMenuAlt4, HiX } from "react-icons/hi";
+import { FiArrowUpRight, FiShoppingBag } from "react-icons/fi";
+import { FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
+import Logo, { LogoMark } from "@/components/Logo";
+
+const links = [
+  { href: "/", label: "Home", num: "01" },
+  { href: "/shop", label: "Shop", num: "02" },
+  { href: "/about", label: "About", num: "03" },
+];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
-  const links = [
-    { href: "/", label: "Home", icon: <FiHome className="w-4 h-4" /> },
-    { href: "/shop", label: "Shop", icon: <FiShoppingBag className="w-4 h-4" /> },
-    { href: "/about", label: "About", icon: <FiInfo className="w-4 h-4" /> },
-    { href: "/contact", label: "Contact", icon: <FiMail className="w-4 h-4" /> },
-  ];
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => setOpen(false), [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  const isActive = (href) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
 
   return (
-    <nav className="bg-white text-gray-900 sticky top-0 z-50 shadow-md border-b border-gray-200 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18 py-3">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <img src="/logo.svg" alt="EtomidateShop.com" className="h-10 transition-all duration-300 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-[#00d4aa]/10 rounded-xl scale-110 opacity-0 group-hover:opacity-100 transition-all duration-300" />
-            </div>
-          </Link>
-
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-8">
-            {links.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-[#00d4aa] transition-all duration-200 hover:bg-[#00d4aa]/5 px-3 py-2 rounded-lg"
-              >
-                <div className="w-4 h-4 flex items-center justify-center">
-                  {l.icon}
-                </div>
-                <span>{l.label}</span>
-              </Link>
-            ))}
-            <Link
-              href="/shop"
-              className="flex items-center gap-2.5 bg-[#00d4aa] hover:bg-[#00b894] text-black text-sm font-bold px-6 py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#00d4aa]/25 hover:scale-105"
-            >
-              <FiShoppingBag className="w-4 h-4" />
-              Shop Now
-            </Link>
-          </div>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden p-2.5 rounded-xl hover:bg-gray-100 transition-all duration-200 border border-gray-200 hover:border-[#00d4aa]"
-            aria-label="Toggle menu"
-          >
-            {open ? <HiX className="w-6 h-6" /> : <HiOutlineMenuAlt3 className="w-6 h-6" />}
-          </button>
+    <>
+      {/* Top strip */}
+      <div className="bg-ember text-white text-[11px] font-semibold tracking-[0.25em] uppercase">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-between font-display">
+          <span className="truncate">Lab-tested &middot; COA on every batch &middot; Ships in 24h</span>
+          <span className="hidden sm:flex items-center gap-4">
+            <a href="https://t.me/chemsolution12maa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-ink transition-colors"><FaTelegramPlane /> Telegram</a>
+            <a href="https://wa.me/19852913802" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-ink transition-colors"><FaWhatsapp /> WhatsApp</a>
+          </span>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      <header
+        className={`sticky top-0 z-50 transition-all duration-300 border-b ${
+          scrolled ? "bg-ink/90 backdrop-blur-xl border-line" : "bg-navy border-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <Logo mark="h-9 w-auto" text="text-[22px]" />
+
+            {/* Desktop nav */}
+            <nav className="hidden lg:flex items-center">
+              <ul className="flex items-center gap-1 panel px-2 py-1.5 slant">
+                {links.map((l) => (
+                  <li key={l.href}>
+                    <Link
+                      href={l.href}
+                      className={`relative flex items-baseline gap-1.5 px-4 py-2 font-display uppercase tracking-[0.12em] text-sm font-semibold transition-colors ${
+                        isActive(l.href) ? "text-white" : "text-mute hover:text-white"
+                      }`}
+                    >
+                      <span className="text-[10px] text-ember">{l.num}</span>
+                      {l.label}
+                      {isActive(l.href) && (
+                        <motion.span layoutId="nav-underline" className="absolute left-4 right-4 -bottom-0.5 h-0.5 bg-ember" />
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <Link href="/shop" className="btn-ember hidden sm:inline-flex !py-2.5 !px-5 text-sm">
+                <FiShoppingBag className="w-4 h-4" /> Order Now
+              </Link>
+              <button
+                onClick={() => setOpen(true)}
+                className="lg:hidden w-11 h-11 flex items-center justify-center border border-line text-bone hover:border-ember transition-colors"
+                aria-label="Open menu"
+              >
+                <HiOutlineMenuAlt4 className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Full-screen mobile drawer */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-white border-t border-gray-200 overflow-hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-ink/70 backdrop-blur-sm lg:hidden"
+            onClick={() => setOpen(false)}
           >
-            <div className="px-4 py-6 space-y-2">
-              {links.map((l, i) => (
-                <motion.div
-                  key={l.href}
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <Link
-                    href={l.href}
-                    onClick={() => setOpen(false)}
-                    className="flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-[#00d4aa] hover:bg-[#00d4aa]/5 rounded-xl px-4 py-3 transition-all duration-200 border border-gray-200 hover:border-[#00d4aa]/20"
-                  >
-                    <div className="w-4 h-4 flex items-center justify-center">
-                      {l.icon}
-                    </div>
-                    <span>{l.label}</span>
-                  </Link>
-                </motion.div>
-              ))}
-              <motion.div
-                initial={{ x: -20, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                <Link
-                  href="/shop"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center justify-center gap-2.5 bg-[#00d4aa] hover:bg-[#00b894] text-black text-sm font-bold px-6 py-3.5 rounded-xl mt-4 transition-all duration-300 hover:shadow-lg hover:shadow-[#00d4aa]/25"
-                >
-                  <FiShoppingBag className="w-4 h-4" />
-                  Shop Now
+            <motion.aside
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 32 }}
+              onClick={(e) => e.stopPropagation()}
+              className="absolute right-0 top-0 h-full w-[88%] max-w-sm bg-navy border-l border-line bg-grid flex flex-col"
+            >
+              <div className="flex items-center justify-between px-6 h-20 border-b border-line">
+                <Logo mark="h-8 w-auto" text="text-xl" />
+                <button onClick={() => setOpen(false)} className="w-11 h-11 flex items-center justify-center border border-line hover:border-ember" aria-label="Close menu">
+                  <HiX className="w-6 h-6" />
+                </button>
+              </div>
+              <nav className="flex-1 px-6 py-8 flex flex-col gap-2">
+                {links.map((l, i) => (
+                  <motion.div key={l.href} initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.08 + i * 0.06 }}>
+                    <Link
+                      href={l.href}
+                      className={`group flex items-center justify-between border-b border-line py-4 display text-4xl ${
+                        isActive(l.href) ? "text-ember" : "text-bone hover:text-ember"
+                      }`}
+                    >
+                      <span className="flex items-baseline gap-3">
+                        <span className="text-xs not-italic font-sans font-semibold tracking-widest text-mute">{l.num}</span>
+                        {l.label}
+                      </span>
+                      <FiArrowUpRight className="w-6 h-6 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                    </Link>
+                  </motion.div>
+                ))}
+              </nav>
+              <div className="px-6 pb-8 space-y-4">
+                <Link href="/shop" className="btn-ember w-full">
+                  <FiShoppingBag className="w-4 h-4" /> Order Now
                 </Link>
-              </motion.div>
-            </div>
+                <div className="flex items-center justify-between text-xs text-mute">
+                  <span className="flex items-center gap-2"><LogoMark className="h-4 w-auto" /> EtomidatePods</span>
+                  <span className="flex items-center gap-3">
+                    <a href="https://t.me/chemsolution12maa" target="_blank" rel="noopener noreferrer" className="hover:text-ember"><FaTelegramPlane className="w-4 h-4" /></a>
+                    <a href="https://wa.me/19852913802" target="_blank" rel="noopener noreferrer" className="hover:text-ember"><FaWhatsapp className="w-4 h-4" /></a>
+                  </span>
+                </div>
+              </div>
+            </motion.aside>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </>
   );
 }
-

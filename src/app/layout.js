@@ -1,5 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
+import { Barlow, Barlow_Condensed } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,24 +6,27 @@ import ToastProvider from "@/components/ToastProvider";
 import SocialFloat from "@/components/SocialFloat";
 import ImageProtection from "@/components/ImageProtection";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const barlow = Barlow({
+  variable: "--font-barlow",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  style: ["normal", "italic"],
 });
 
 export const metadata = {
-  metadataBase: new URL("https://etomidateshop.com"),
+  metadataBase: new URL("https://etomidatepods.com"),
   title: {
-    default: "Etomidate Shop — Premium Powder, K-Pods Vape & Liquid | EtomidateShop.com",
-    template: "%s | EtomidateShop.com",
+    default: "Etomidate Pods — Premium Powder, K-Pods Vape & Liquid | EtomidatePods.com",
+    template: "%s | EtomidatePods.com",
   },
   description:
-    "EtomidateShop.com — Premium etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity. COA certified, discreet worldwide shipping within 24h.",
+    "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity. COA certified, discreet worldwide shipping within 24h.",
   keywords: [
     "buy etomidate online",
     "etomidate for sale",
@@ -87,8 +89,8 @@ export const metadata = {
     "buy 16145-71-4",
     "16145-71-4 powder",
     "16145-71-4 for sale",
-    "EtomidateShop",
-    "etomidateshop.com",
+    "EtomidatePods",
+    "etomidatepods.com",
     "space oil",
     "buy space oil",
     "space oil vape",
@@ -109,23 +111,23 @@ export const metadata = {
     "research chemical vape",
     "pharmaceutical vape pods",
   ],
-  authors: [{ name: "EtomidateShop.com" }],
-  creator: "EtomidateShop.com",
-  publisher: "EtomidateShop.com",
+  authors: [{ name: "EtomidatePods.com" }],
+  creator: "EtomidatePods.com",
+  publisher: "EtomidatePods.com",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://etomidateshop.com",
-    siteName: "EtomidateShop.com",
-    title: "Etomidate Shop — Premium Powder, K-Pods Vape & Liquid",
+    url: "https://etomidatepods.com",
+    siteName: "EtomidatePods.com",
+    title: "Etomidate Pods — Premium Powder, K-Pods Vape & Liquid",
     description:
-      "EtomidateShop.com — Premium etomidate powder, K-Pods vape cartridges & liquid. ≥99.8% purity, COA included, discreet worldwide shipping.",
+      "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid. ≥99.8% purity, COA included, discreet worldwide shipping.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Etomidate Shop — Premium Powder, Vape & Liquid",
+    title: "Etomidate Pods — Premium Powder, Vape & Liquid",
     description:
-      "EtomidateShop.com — Premium etomidate powder, K-Pods vape cartridges & liquid. Lab-tested ≥99.8% purity. Ships worldwide within 24h.",
+      "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid. Lab-tested ≥99.8% purity. Ships worldwide within 24h.",
   },
   robots: {
     index: true,
@@ -139,7 +141,7 @@ export const metadata = {
     },
   },
   alternates: {
-    canonical: "https://etomidateshop.com",
+    canonical: "https://etomidatepods.com",
   },
   icons: {
     icon: "/favicon.svg",
@@ -154,25 +156,10 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${barlow.variable} ${barlowCondensed.variable} h-full antialiased`}
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              var _smartsupp = _smartsupp || {};
-              _smartsupp.key = '55db5e397b21255505ad00239a6a0de5ff43ae1e';
-              window.smartsupp||(function(d) {
-                var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
-                s=d.getElementsByTagName('script')[0];c=d.createElement('script');
-                c.type='text/javascript';c.charset='utf-8';c.async=true;
-                c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
-              })(document);
-            `,
-          }}
-        />
-      </head>
-      <body className="min-h-full flex flex-col">
+      <head />
+      <body className="min-h-full flex flex-col bg-navy text-bone">
         <ImageProtection />
         <ToastProvider />
         <Navbar />

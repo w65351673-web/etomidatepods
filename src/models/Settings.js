@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const SettingsSchema = new mongoose.Schema(
   {
     key: { type: String, default: "main", unique: true },
-    siteName: { type: String, default: "EtomidateShop" },
+    siteName: { type: String, default: "EtomidatePods" },
     tagline: { type: String, default: "Premium Etomidate Products — Trusted Worldwide" },
     heroSubtitle: { type: String, default: "" },
     contactEmail: { type: String, default: "" },

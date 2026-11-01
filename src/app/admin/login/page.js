@@ -45,11 +45,11 @@ export default function AdminLoginPage() {
         className="w-full max-w-sm"
       >
         <div className="text-center mb-8">
-          <div className="w-14 h-14 bg-[#00d4aa]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <GiChemicalDrop className="w-7 h-7 text-[#00d4aa]" />
+          <div className="w-14 h-14 bg-[#ec5a0e]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <GiChemicalDrop className="w-7 h-7 text-[#ec5a0e]" />
           </div>
           <h1 className="text-2xl font-extrabold text-gray-900">Admin Login</h1>
-          <p className="text-sm text-gray-600 mt-1">EtomidateShop Dashboard</p>
+          <p className="text-sm text-gray-600 mt-1">EtomidatePods Dashboard</p>
         </div>
 
         <form onSubmit={handleLogin} className="bg-gray-100 rounded-2xl border border-gray-200 p-6 space-y-4">
@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4aa] focus:border-transparent placeholder:text-gray-600"
+                className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ec5a0e] focus:border-transparent placeholder:text-gray-600"
                 placeholder="admin"
               />
             </div>
@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4aa] focus:border-transparent placeholder:text-gray-600"
+                className="w-full bg-white border border-gray-200 text-gray-900 rounded-lg pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ec5a0e] focus:border-transparent placeholder:text-gray-600"
                 placeholder="••••••••"
               />
             </div>
@@ -97,7 +97,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 bg-[#00d4aa] hover:bg-[#059669] disabled:bg-[#059669]/50 text-black font-semibold py-3 rounded-lg transition-all hover:shadow-lg hover:shadow-[#00d4aa]/25"
+            className="w-full flex items-center justify-center gap-2 bg-[#ec5a0e] hover:bg-[#b94408] disabled:bg-[#b94408]/50 text-black font-semibold py-3 rounded-lg transition-all hover:shadow-lg hover:shadow-[#ec5a0e]/25"
           >
             {loading ? (
               <FiLoader className="w-5 h-5 animate-spin" />

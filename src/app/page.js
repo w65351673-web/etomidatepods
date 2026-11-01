@@ -6,9 +6,9 @@ import HomeClient from "@/components/HomeClient";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Etomidate Shop — Premium Powder, K-Pods Vape & Liquid",
+  title: "Etomidate Pods — Premium Powder, K-Pods Vape & Liquid",
   description:
-    "EtomidateShop.com — Premium etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity. COA certified, fast discreet worldwide shipping within 24h.",
+    "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity. COA certified, fast discreet worldwide shipping within 24h.",
   keywords: [
     "buy etomidate online",
     "etomidate for sale",
@@ -47,21 +47,21 @@ export const metadata = {
     "etomidate 33125-97-2",
   ],
   openGraph: {
-    title: "Etomidate Shop — Premium Powder, Vape & Liquid",
+    title: "Etomidate Pods — Premium Powder, Vape & Liquid",
     description:
-      "EtomidateShop.com — Premium etomidate powder, K-Pods vape cartridges & liquid. ≥99.8% purity, lab-tested with COA. Fast discreet shipping worldwide.",
-    url: "https://etomidateshop.com",
-    siteName: "EtomidateShop.com",
+      "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid. ≥99.8% purity, lab-tested with COA. Fast discreet shipping worldwide.",
+    url: "https://etomidatepods.com",
+    siteName: "EtomidatePods.com",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Etomidate Shop — Premium Powder, Vape & Liquid",
+    title: "Etomidate Pods — Premium Powder, Vape & Liquid",
     description:
-      "EtomidateShop.com — Premium etomidate powder, K-Pods vape & liquid. ≥99.8% purity, lab-tested, COA included. Ships worldwide within 24h.",
+      "EtomidatePods.com — Premium etomidate powder, K-Pods vape & liquid. ≥99.8% purity, lab-tested, COA included. Ships worldwide within 24h.",
   },
   alternates: {
-    canonical: "https://etomidateshop.com",
+    canonical: "https://etomidatepods.com",
   },
   robots: {
     index: true,
@@ -76,7 +76,7 @@ export default async function Home() {
     const siteSettings = {
       announcement: "",
       heroSubtitle: "",
-      siteName: "EtomidateShop",
+      siteName: "EtomidatePods",
       tagline: "",
     };
     return <HomeClient products={[]} siteSettings={siteSettings} />;
@@ -100,7 +100,7 @@ export default async function Home() {
   const siteSettings = {
     announcement: raw?.announcement || "",
     heroSubtitle: raw?.heroSubtitle || "",
-    siteName: raw?.siteName || "EtomidateShop",
+    siteName: raw?.siteName || "EtomidatePods",
     tagline: raw?.tagline || "",
   };
 

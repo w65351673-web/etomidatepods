@@ -1,72 +1,53 @@
 "use client";
 import { useState } from "react";
-import { FiMessageCircle, FiMail, FiX } from "react-icons/fi";
+import { FiMessageCircle, FiX } from "react-icons/fi";
 import { FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
 
 const links = [
-  {
-    label: "Telegram",
-    href: "https://t.me/chemsolution12mal",
-    icon: <FaTelegramPlane className="w-5 h-5" />,
-    bg: "bg-[#0088cc]",
-    hover: "hover:bg-[#0077b5]",
-  },
-  {
-    label: "Email",
-    href: "mailto:orders@etomidateshop.com",
-    icon: <FiMail className="w-5 h-5" />,
-    bg: "bg-[#00d4aa]",
-    hover: "hover:bg-[#00b894]",
-  },
-  {
-    label: "WhatsApp",
-    href: "https://wa.me/15125922145",
-    icon: <FaWhatsapp className="w-5 h-5" />,
-    bg: "bg-[#25d366]",
-    hover: "hover:bg-[#1ebe5d]",
-  },
+  { label: "Telegram", href: "https://t.me/chemsolution12maa", icon: FaTelegramPlane, color: "#2aa3e0" },
+  { label: "WhatsApp", href: "https://wa.me/19852913802", icon: FaWhatsapp, color: "#25d366" },
 ];
 
 export default function SocialFloat() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 flex flex-col-reverse items-start gap-3">
-      {/* Toggle button */}
+    <div className="fixed bottom-6 left-6 z-50 flex flex-col-reverse items-start gap-2">
       <button
         onClick={() => setOpen(!open)}
-        className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ${
-          open
-            ? "bg-[#262626] text-white rotate-0"
-            : "bg-[#00d4aa] text-black hover:bg-[#00b894] hover:shadow-xl hover:shadow-[#00d4aa]/25"
-        }`}
+        className="w-14 h-14 flex items-center justify-center skew-x transition-all duration-300 border"
+        style={{ background: open ? "#0f0c21" : "#ec5a0e", borderColor: open ? "#342e63" : "#ec5a0e", color: "#fff" }}
+        aria-label={open ? "Close contact menu" : "Open contact menu"}
       >
-        {open ? <FiX className="w-6 h-6" /> : <FiMessageCircle className="w-6 h-6" />}
+        <span className="unskew-x">{open ? <FiX className="w-6 h-6" /> : <FiMessageCircle className="w-6 h-6" />}</span>
       </button>
 
-      {/* Social links */}
       {open && (
-        <div className="flex flex-col gap-3">
-          {links.map((link, i) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group flex items-center gap-3 ${link.bg} ${link.hover} text-white w-14 hover:w-auto rounded-full shadow-lg transition-all duration-300 overflow-hidden`}
-              style={{ animationDelay: `${i * 80}ms` }}
-            >
-              <div className="w-14 h-14 flex items-center justify-center shrink-0">
-                {link.icon}
-              </div>
-              <span className="pr-5 text-sm font-semibold whitespace-nowrap hidden group-hover:inline-block">
-                {link.label}
-              </span>
-            </a>
-          ))}
+        <div className="flex flex-col items-start gap-2">
+          {links.map((link) => {
+            const Icon = link.icon;
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-3"
+              >
+                <span
+                  className="w-12 h-12 flex items-center justify-center skew-x border"
+                  style={{ background: `${link.color}1a`, borderColor: `${link.color}66`, color: link.color }}
+                >
+                  <Icon className="w-5 h-5 unskew-x" />
+                </span>
+                <span className="bg-ink border border-line text-bone text-xs font-display uppercase tracking-[0.15em] px-3 py-1.5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
+                  {link.label}
+                </span>
+              </a>
+            );
+          })}
         </div>
       )}
     </div>
   );
 }
-

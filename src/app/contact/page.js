@@ -1,53 +1,42 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { FiMail, FiPhone, FiTruck, FiClock, FiUser, FiSend, FiMessageSquare, FiLoader, FiCheckCircle, FiMapPin, FiArrowRight, FiHeadphones, FiPaperclip, FiCalendar, FiGlobe } from "react-icons/fi";
-import { BsShieldCheck, BsLightningCharge } from "react-icons/bs";
+import { FiUser, FiSend, FiMessageSquare, FiLoader, FiCheckCircle, FiArrowRight, FiArrowUpRight, FiClock } from "react-icons/fi";
 import { FaWhatsapp, FaTelegramPlane } from "react-icons/fa";
 
+const faqs = [
+  { q: "How long does shipping take?", a: "Orders are processed within 24–48h. Standard delivery is 3–7 business days within Europe; 7–14 days elsewhere." },
+  { q: "Do you offer bulk pricing?", a: "Yes. Tell us your quantities and destination and we'll send a wholesale quote with consolidated shipping." },
+  { q: "Is shipping discreet?", a: "Always. Plain, unmarked packaging with no product references, vacuum-sealed and tamper-evident." },
+  { q: "What payment methods do you accept?", a: "Bitcoin (BTC). The wallet address is shared in chat after your order is confirmed." },
+];
+
+function Field({ icon: Icon, ...props }) {
+  return (
+    <div className="relative">
+      <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute" />
+      <input {...props} className="field cut-br" />
+    </div>
+  );
+}
+
 export default function ContactPage() {
-  const [form, setForm] = useState({ 
-    name: "", 
-    email: "", 
-    phone: "",
-    subject: "", 
-    message: ""
-  });
+  const [form, setForm] = useState({ name: "", phone: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [siteSettings, setSiteSettings] = useState({});
-  const [focusedField, setFocusedField] = useState(null);
-
-  useEffect(() => {
-    fetch("/api/settings")
-      .then((r) => r.json())
-      .then((data) => setSiteSettings(data.settings || {}))
-      .catch(() => {});
-  }, []);
+  const [openFaq, setOpenFaq] = useState(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const res = await fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: form.name, contact: form.phone, subject: form.subject, message: form.message }) });
       if (res.ok) {
         setSent(true);
-        setForm({ 
-          name: "", 
-          email: "", 
-          phone: "",
-          subject: "", 
-          message: ""
-        });
+        setForm({ name: "", phone: "", subject: "", message: "" });
         toast.success("Message sent successfully!");
-      } else {
-        toast.error("Failed to send message.");
-      }
+      } else toast.error("Failed to send message.");
     } catch {
       toast.error("Network error. Please try again.");
     } finally {
@@ -55,294 +44,143 @@ export default function ContactPage() {
     }
   };
 
-  const contactCards = [
-    {
-      icon: <FiMail className="w-5 h-5" />,
-      label: "Email Support",
-      value: siteSettings.contactEmail || "orders@etomidateshop.com",
-      desc: "Response within 2 hours",
-      color: "from-[#00d4aa]/20 to-[#00d4aa]/5",
-      href: `mailto:${siteSettings.contactEmail || "orders@etomidateshop.com"}`,
-    },
-    {
-      icon: <FaTelegramPlane className="w-5 h-5" />,
-      label: "Telegram",
-      value: "@chemsolution12mal",
-      desc: "Message us on Telegram",
-      color: "from-sky-500/20 to-sky-500/5",
-      href: "https://t.me/chemsolution12mal",
-    },
+  const channels = [
+    { icon: FaWhatsapp, label: "WhatsApp", value: "+1 985 291 3802", note: "Fastest — usually under 2h", href: "https://wa.me/19852913802", accent: "#25d366" },
+    { icon: FaTelegramPlane, label: "Telegram", value: "@chemsolution12maa", note: "Order is copied for you to paste", href: "https://t.me/chemsolution12maa", accent: "#2aa3e0" },
   ];
-
-  const trustBadges = [
-    { icon: <BsShieldCheck className="w-4 h-4" />, text: "Encrypted & Secure" },
-    { icon: <BsLightningCharge className="w-4 h-4" />, text: "Quick Response" },
-    { icon: <FiHeadphones className="w-4 h-4" />, text: "24/7 Support" },
-  ];
-
-  const inputCls = "w-full bg-gray-50 border border-gray-100 text-gray-900 rounded-xl pl-11 pr-4 py-3.5 text-sm transition-all duration-300 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 focus:border-[#00d4aa]/50 focus:bg-gray-50";
-  const selectCls = "w-full bg-gray-50 border border-gray-100 text-gray-900 rounded-xl px-4 py-3.5 text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#00d4aa]/50 focus:border-[#00d4aa]/50 focus:bg-gray-50 cursor-pointer";
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#00d4aa]/5 via-transparent to-transparent" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-[#00d4aa]/5 rounded-full blur-[120px]" />
-
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-center max-w-2xl mx-auto"
-          >
-            <div className="inline-flex items-center gap-2 bg-[#00d4aa]/10 border border-[#00d4aa]/20 text-[#00d4aa] text-xs font-semibold uppercase tracking-widest px-4 py-2 rounded-full mb-6">
-              <FiMessageSquare className="w-3.5 h-3.5" />
-              Get in Touch
-            </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
-              Connect With <span className="text-[#00d4aa]">EtomidateShop</span>
-            </h1>
-            <p className="text-gray-600 text-lg leading-relaxed">
-              Premium quality products, exceptional service, and worldwide delivery. Our specialists are ready to assist with your needs.
-            </p>
+    <div className="bg-navy">
+      {/* Header */}
+      <section className="relative overflow-hidden border-b border-line bg-ink">
+        <div className="absolute inset-0 bg-grid bg-grid-fade pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <span className="eyebrow">Contact</span>
+            <h1 className="display text-6xl md:text-8xl mt-5">Talk to a <span className="text-ember">human.</span></h1>
+            <p className="mt-6 text-lg text-mute max-w-2xl">Orders, bulk quotes, shipping questions or technical guidance — pick a channel. Chat apps are fastest; the form reaches the same team.</p>
           </motion.div>
         </div>
-      </div>
+      </section>
 
-      {/* Contact Cards */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div className="flex flex-wrap justify-center gap-4 max-w-2xl mx-auto">
-          {contactCards.map((card, i) => (
-            <motion.a
-              key={card.label}
-              href={card.href}
-              target={card.href?.startsWith("http") ? "_blank" : undefined}
-              rel={card.href?.startsWith("http") ? "noopener noreferrer" : undefined}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08, duration: 0.4 }}
-              className="group relative bg-gray-50 border border-gray-100 rounded-2xl p-5 hover:border-[#00d4aa]/30 transition-all duration-300 cursor-pointer flex-1 min-w-[220px] max-w-[300px]"
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${card.color} rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-              <div className="relative">
-                <div className="w-10 h-10 bg-[#1a1a1a] border border-gray-200 rounded-xl flex items-center justify-center text-[#00d4aa] mb-3 group-hover:bg-[#00d4aa]/10 group-hover:border-[#00d4aa]/30 transition-all">
-                  {card.icon}
-                </div>
-                <h3 className="text-sm font-bold text-gray-900 mb-0.5">{card.label}</h3>
-                <p className="text-sm text-[#00d4aa] font-medium mb-1">{card.value}</p>
-                <p className="text-xs text-gray-500">{card.desc}</p>
-              </div>
-            </motion.a>
-          ))}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid lg:grid-cols-12 gap-12">
+        {/* Left: channels + FAQ */}
+        <div className="lg:col-span-5 space-y-10">
+          <div className="space-y-3">
+            {channels.map((c, i) => {
+              const Icon = c.icon;
+              return (
+                <motion.a
+                  key={c.label}
+                  href={c.href}
+                  target={c.href.startsWith("http") ? "_blank" : undefined}
+                  rel={c.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + i * 0.08 }}
+                  className="group panel panel-hover cut-br flex items-center gap-5 p-5"
+                >
+                  <span className="w-12 h-12 shrink-0 flex items-center justify-center skew-x" style={{ background: `${c.accent}22`, border: `1px solid ${c.accent}66`, color: c.accent }}>
+                    <Icon className="w-5 h-5 unskew-x" />
+                  </span>
+                  <span className="flex-1 min-w-0">
+                    <span className="block font-display uppercase tracking-[0.2em] text-xs text-mute">{c.label}</span>
+                    <span className="block font-display font-bold text-xl text-bone truncate">{c.value}</span>
+                    <span className="block text-xs text-mute">{c.note}</span>
+                  </span>
+                  <FiArrowUpRight className="w-5 h-5 text-ember opacity-0 group-hover:opacity-100 transition-opacity" />
+                </motion.a>
+              );
+            })}
+          </div>
+
+          <div className="panel cut-tl p-6 flex items-center gap-5">
+            <span className="w-14 h-14 shrink-0 flex items-center justify-center bg-ember text-white skew-x"><FiClock className="w-6 h-6 unskew-x" /></span>
+            <div>
+              <p className="font-display uppercase tracking-[0.2em] text-xs text-mute">Average response</p>
+              <p className="display text-4xl text-bone">&lt; 2 hours</p>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="eyebrow mb-5">Common questions</h3>
+            <div className="border-t border-line">
+              {faqs.map((f, i) => {
+                const on = openFaq === i;
+                return (
+                  <div key={f.q} className="border-b border-line">
+                    <button onClick={() => setOpenFaq(on ? -1 : i)} className="w-full flex items-center justify-between gap-4 py-4 text-left">
+                      <span className={`font-display font-semibold uppercase tracking-wide ${on ? "text-ember" : "text-bone"}`}>{f.q}</span>
+                      <span className={`display text-2xl transition-transform ${on ? "rotate-45 text-ember" : "text-mute"}`}>+</span>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {on && (
+                        <motion.p initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden text-sm text-mute leading-relaxed pb-4">
+                          {f.a}
+                        </motion.p>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Main Content — Form + Side Panel */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-
-          {/* Form — takes 3 cols */}
-          <div className="lg:col-span-3">
-            <AnimatePresence mode="wait">
-              {sent ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-gray-50 border border-[#00d4aa]/20 rounded-3xl p-12 text-center"
-                >
-                  <div className="w-20 h-20 bg-[#00d4aa]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <FiCheckCircle className="w-10 h-10 text-[#00d4aa]" />
+        {/* Right: form */}
+        <div className="lg:col-span-7">
+          <AnimatePresence mode="wait">
+            {sent ? (
+              <motion.div key="ok" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="panel cut-tl cut-br p-14 text-center">
+                <span className="mx-auto w-20 h-20 flex items-center justify-center bg-ember text-white skew-x"><FiCheckCircle className="w-9 h-9 unskew-x" /></span>
+                <h2 className="display text-5xl mt-8">Message received.</h2>
+                <p className="text-mute mt-3 max-w-sm mx-auto">Thanks for reaching out — the team will reply within 24 hours.</p>
+                <button onClick={() => setSent(false)} className="btn-ghost mt-8">Send another <FiArrowRight className="w-4 h-4" /></button>
+              </motion.div>
+            ) : (
+              <motion.form key="form" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} onSubmit={handleSubmit} className="panel cut-tl cut-br p-8 md:p-10">
+                <div className="flex items-end justify-between mb-8">
+                  <div>
+                    <p className="font-display uppercase tracking-[0.25em] text-xs text-ember">Written enquiry</p>
+                    <h2 className="display text-4xl mt-1">Send a message</h2>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h3>
-                  <p className="text-gray-600 mb-6 max-w-sm mx-auto">
-                    Thank you for reaching out. Our team will get back to you within 48 hours.
-                  </p>
-                  <button
-                    onClick={() => setSent(false)}
-                    className="inline-flex items-center gap-2 bg-[#00d4aa] hover:bg-[#00b894] text-black font-semibold px-6 py-3 rounded-xl transition-all hover:shadow-lg hover:shadow-[#00d4aa]/25"
-                  >
-                    Send Another Message
-                    <FiArrowRight className="w-4 h-4" />
-                  </button>
-                </motion.div>
-              ) : (
-                <motion.form
-                  key="form"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.4 }}
-                  onSubmit={handleSubmit}
-                  className="bg-gray-50 border border-gray-100 rounded-3xl p-8 md:p-10"
-                >
-                  <h2 className="text-xl font-bold text-gray-900 mb-1">Send us a message</h2>
-                  <p className="text-sm text-gray-500 mb-8">Fill in the form below and we&apos;ll respond as soon as possible.</p>
+                  <span className="hidden sm:block text-xs text-mute">* required</span>
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Full Name *</label>
-                      <div className="relative group">
-                        <FiUser className={`absolute left-3.5 top-4 w-4 h-4 transition-colors duration-300 ${focusedField === "name" ? "text-[#00d4aa]" : "text-gray-600"}`} />
-                        <input
-                          type="text"
-                          placeholder="Your full name"
-                          required
-                          value={form.name}
-                          onFocus={() => setFocusedField("name")}
-                          onBlur={() => setFocusedField(null)}
-                          onChange={(e) => setForm({ ...form, name: e.target.value })}
-                          className={inputCls}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Email Address *</label>
-                      <div className="relative">
-                        <FiMail className={`absolute left-3.5 top-4 w-4 h-4 transition-colors duration-300 ${focusedField === "email" ? "text-[#00d4aa]" : "text-gray-600"}`} />
-                        <input
-                          type="email"
-                          placeholder="your@email.com"
-                          required
-                          value={form.email}
-                          onFocus={() => setFocusedField("email")}
-                          onBlur={() => setFocusedField(null)}
-                          onChange={(e) => setForm({ ...form, email: e.target.value })}
-                          className={inputCls}
-                        />
-                      </div>
-                    </div>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <label className="block">
+                    <span className="block font-display uppercase tracking-[0.2em] text-[10px] text-mute mb-2">Full name *</span>
+                    <Field icon={FiUser} type="text" required placeholder="Your full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                  </label>
+                  <label className="block">
+                    <span className="block font-display uppercase tracking-[0.2em] text-[10px] text-mute mb-2">WhatsApp / Telegram *</span>
+                    <Field icon={FaWhatsapp} type="text" required placeholder="+1 555 123 4567 or @username" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  </label>
+                  <label className="block">
+                    <span className="block font-display uppercase tracking-[0.2em] text-[10px] text-mute mb-2">Subject *</span>
+                    <Field icon={FiMessageSquare} type="text" required placeholder="Bulk quote, shipping, COA…" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} />
+                  </label>
+                </div>
+
+                <label className="block mt-4">
+                  <span className="block font-display uppercase tracking-[0.2em] text-[10px] text-mute mb-2">Message *</span>
+                  <div className="relative">
+                    <FiSend className="absolute left-3.5 top-4 w-4 h-4 text-mute" />
+                    <textarea required rows={6} maxLength={1000} placeholder="Tell us what you need…" value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="field cut-br resize-none" />
+                    <span className="absolute bottom-3 right-3 text-[10px] text-mute">{form.message.length}/1000</span>
                   </div>
+                </label>
 
-                  <div className="mb-5">
-                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Phone Number</label>
-                    <div className="relative">
-                      <FiPhone className={`absolute left-3.5 top-4 w-4 h-4 transition-colors duration-300 ${focusedField === "phone" ? "text-[#00d4aa]" : "text-gray-600"}`} />
-                      <input
-                        type="tel"
-                        placeholder="+1 (555) 123-4567"
-                        value={form.phone}
-                        onFocus={() => setFocusedField("phone")}
-                        onBlur={() => setFocusedField(null)}
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        className={inputCls}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-5">
-                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Subject *</label>
-                    <div className="relative">
-                      <FiMessageSquare className={`absolute left-3.5 top-4 w-4 h-4 transition-colors duration-300 ${focusedField === "subject" ? "text-[#00d4aa]" : "text-gray-600"}`} />
-                      <input
-                        type="text"
-                        placeholder="How can we help you?"
-                        required
-                        value={form.subject}
-                        onFocus={() => setFocusedField("subject")}
-                        onBlur={() => setFocusedField(null)}
-                        onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                        className={inputCls}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-8">
-                    <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Message *</label>
-                    <div className="relative">
-                      <FiSend className={`absolute left-3.5 top-4 w-4 h-4 transition-colors duration-300 ${focusedField === "message" ? "text-[#00d4aa]" : "text-gray-600"}`} />
-                      <textarea
-                        placeholder="Please provide detailed information about your inquiry..."
-                        required
-                        rows={6}
-                        value={form.message}
-                        onFocus={() => setFocusedField("message")}
-                        onBlur={() => setFocusedField(null)}
-                        onChange={(e) => setForm({ ...form, message: e.target.value })}
-                        className={`${inputCls} resize-none`}
-                      />
-                      <div className="absolute bottom-3 right-3 text-xs text-gray-500">
-                        {form.message.length}/1000 characters
-                      </div>
-                    </div>
-                  </div>
-
-                  
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full flex items-center justify-center gap-2.5 bg-gradient-to-r from-[#00d4aa] to-[#059669] hover:from-[#059669] hover:to-[#047857] disabled:opacity-50 text-black font-bold py-4 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-[#00d4aa]/25 text-base"
-                  >
-                    {submitting ? (
-                      <FiLoader className="w-5 h-5 animate-spin" />
-                    ) : (
-                      <FiSend className="w-5 h-5" />
-                    )}
-                    {submitting ? "Sending..." : "Send Message"}
-                  </button>
-
-                  {/* Trust badges below button */}
-                  <div className="flex items-center justify-center gap-6 mt-5">
-                    {trustBadges.map((badge) => (
-                      <div key={badge.text} className="flex items-center gap-1.5 text-gray-500">
-                        <span className="text-[#00d4aa]">{badge.icon}</span>
-                        <span className="text-[11px] font-medium">{badge.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                </motion.form>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Side Panel — takes 2 cols */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* FAQ shortcuts */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="bg-gray-50 border border-gray-100 rounded-3xl p-8"
-            >
-              <h3 className="text-lg font-bold text-gray-900 mb-5">Common Questions</h3>
-              <div className="space-y-4">
-                {[
-                  { q: "How long does shipping take?", a: "Orders are processed within 48h. Standard delivery takes 3–7 business days within Europe." },
-                  { q: "Do you offer bulk pricing?", a: "Yes! Contact us with your requirements and we'll provide a custom quote for large orders." },
-                  { q: "Is shipping discreet?", a: "Absolutely. All packages are shipped in plain, unmarked packaging with no product references." },
-                  { q: "What payment methods do you accept?", a: "We accept bank transfer, cryptocurrency, and other methods. Details are provided after order confirmation." },
-                ].map((item, i) => (
-                  <div key={i} className="border-b border-[#1a1a1a] pb-4 last:border-0 last:pb-0">
-                    <h4 className="text-sm font-semibold text-[#00d4aa] mb-1">{item.q}</h4>
-                    <p className="text-xs text-gray-500 leading-relaxed">{item.a}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Response time card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-              className="bg-gradient-to-br from-[#00d4aa]/10 to-[#00d4aa]/5 border border-[#00d4aa]/20 rounded-3xl p-8 text-center"
-            >
-              <div className="w-14 h-14 bg-[#00d4aa]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <FiClock className="w-7 h-7 text-[#00d4aa]" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Fast Response Time</h3>
-              <p className="text-sm text-gray-600 mb-4">Average reply within</p>
-              <div className="text-4xl font-extrabold text-[#00d4aa] mb-1">&lt; 2 Hours</div>
-              <p className="text-xs text-gray-500">during business hours</p>
-            </motion.div>
-          </div>
+                <button type="submit" disabled={submitting} className="btn-ember w-full mt-6 disabled:opacity-50">
+                  {submitting ? <FiLoader className="w-4 h-4 animate-spin" /> : <FiSend className="w-4 h-4" />}
+                  {submitting ? "Sending…" : "Send message"}
+                </button>
+                <p className="mt-4 text-center text-xs text-mute">Encrypted in transit &middot; Never shared &middot; Reply within 24h</p>
+              </motion.form>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
   );
 }
-
-

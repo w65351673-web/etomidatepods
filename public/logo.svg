@@ -1,43 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 48" fill="none">
-  <!-- Modern crystal/shield icon with purple gradient -->
-  <g transform="translate(4, 2)">
-    <!-- Outer shield/crystal shape -->
-    <path d="M22 2L34 10L34 26L22 34L10 26L10 10Z" stroke="url(#gradient1)" stroke-width="2.5" fill="none"/>
-    
-    <!-- Inner glow -->
-    <path d="M22 6L30 11L30 24L22 29L14 24L14 11Z" fill="url(#gradient2)" opacity="0.4"/>
-    
-    <!-- Center crystal -->
-    <path d="M22 12L18 15L18 21L22 24L26 21L26 15Z" fill="url(#gradient1)" opacity="0.9"/>
-    
-    <!-- Light reflections -->
-    <path d="M19 10L22 8L25 10L24 12L20 12Z" fill="#00d4aa" opacity="0.7"/>
-    <circle cx="17" cy="14" r="1.2" fill="#ffffff" opacity="0.9"/>
-    <circle cx="27" cy="18" r="0.9" fill="#ffffff" opacity="0.6"/>
-    
-    <!-- Sparkle accents -->
-    <path d="M10 10L12 7L14 10L12 13Z" fill="#00d4aa" opacity="0.6"/>
-    <path d="M30 10L32 7L34 10L32 13Z" fill="#00d4aa" opacity="0.6"/>
-    <path d="M10 26L12 29L14 26L12 23Z" fill="#00d4aa" opacity="0.6"/>
-    <path d="M30 26L32 29L34 26L32 23Z" fill="#00d4aa" opacity="0.6"/>
-    
-    <!-- Gradients -->
-    <defs>
-      <linearGradient id="gradient1" x1="10" y1="2" x2="34" y2="34" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#00d4aa"/>
-        <stop offset="1" stop-color="#00b894"/>
-      </linearGradient>
-      <linearGradient id="gradient2" x1="14" y1="6" x2="30" y2="29" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#00d4aa"/>
-        <stop offset="1" stop-color="#00d4aa"/>
-      </linearGradient>
-    </defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 130" fill="none">
+  <g fill="#ec5a0e">
+    <polygon points="78,38 163.4,38 170,20 84.5,20"/>
+    <polygon points="60,70 151.8,70 158.4,52 66.5,52"/>
+    <polygon points="22,108 138,108 146,86 30,86"/>
+    <polygon points="124,108 138,108 170,20 156,20"/>
+    <polygon points="92,20 118,20 120.5,13 94.5,13"/>
+    <polygon points="22,108 46,108 44,114 20,114" opacity="0.85"/>
   </g>
-  
-  <!-- Brand text -->
-  <text x="50" y="20" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="800" fill="#111827" letter-spacing="-0.02em">Etomidate</text>
-  <text x="50" y="38" font-family="system-ui, -apple-system, sans-serif" font-size="17" font-weight="800" fill="url(#gradient1)" letter-spacing="-0.02em">Shop</text>
-  <text x="125" y="38" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="600" fill="#00b894" letter-spacing="0.08em">.com</text>
+  <text x="190" y="88" font-family="'Barlow Condensed', 'Arial Narrow', Impact, sans-serif" font-size="68" font-weight="800" font-style="italic" fill="#f4f1ff" letter-spacing="-1">ETOMIDATE<tspan fill="#ec5a0e">PODS</tspan></text>
 </svg>
-
-

@@ -3,7 +3,7 @@ import dbConnect from "@/lib/mongodb";
 import Product from "@/models/Product";
 import ProductDetailClient from "./ProductDetailClient";
 
-const BASE_URL = "https://etomidateshop.com";
+const BASE_URL = "https://etomidatepods.com";
 
 async function getProduct(slug) {
   try {
@@ -22,13 +22,13 @@ export async function generateMetadata({ params }) {
 
   if (!product) {
     return {
-      title: "Product Not Found | EtomidateShop.com",
+      title: "Product Not Found | EtomidatePods.com",
       description: "The product you are looking for could not be found.",
     };
   }
 
   const priceFrom = product.sizes?.[0]?.price || product.price || 0;
-  const title = `${product.name} — Buy Online | EtomidateShop.com`;
+  const title = `${product.name} — Buy Online | EtomidatePods.com`;
   const description = product.shortDescription
     ? `${product.shortDescription} From €${priceFrom}. ≥99.8% purity, COA included. Discreet worldwide shipping.`
     : `Buy ${product.name} online. Pharmaceutical-grade, lab-tested ≥99.8% purity. COA included. From €${priceFrom}. Discreet worldwide shipping.`;
@@ -54,7 +54,7 @@ export async function generateMetadata({ params }) {
       title,
       description,
       url: `${BASE_URL}/shop/${slug}`,
-      siteName: "EtomidateShop.com",
+      siteName: "EtomidatePods.com",
       type: "website",
     },
     alternates: {
@@ -69,11 +69,9 @@ export default async function ProductPage({ params }) {
 
   if (!product) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
-        <Link href="/shop" className="text-[#00d4aa] hover:underline">
-          Back to Shop
-        </Link>
+      <div className="max-w-7xl mx-auto px-4 py-32 text-center">
+        <h1 className="display text-5xl mb-4">Product not found</h1>
+        <Link href="/shop" className="btn-ghost">Back to shop</Link>
       </div>
     );
   }

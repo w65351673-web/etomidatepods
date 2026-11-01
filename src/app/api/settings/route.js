@@ -9,7 +9,7 @@ export async function GET() {
   await dbConnect();
   let settings = await Settings.findOne({ key: "main" }).lean();
   if (!settings) {
-    settings = { siteName: "EtomidateShop", tagline: "", heroSubtitle: "", contactEmail: "orders@etomidateshop.com", contactPhone: "", shippingNote: "", aboutText: "", announcement: "" };
+    settings = { siteName: "EtomidatePods", tagline: "", heroSubtitle: "", contactEmail: "orders@etomidatepods.com", contactPhone: "", shippingNote: "", aboutText: "", announcement: "" };
   }
   return NextResponse.json({ settings });
 }

@@ -7,7 +7,8 @@ export async function POST(request) {
   try {
     await dbConnect();
     const body = await request.json();
-    const { name, email, subject, message } = body;
+    const { name, subject, message } = body;
+    const email = body.contact || body.email; // WhatsApp number or Telegram handle
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });

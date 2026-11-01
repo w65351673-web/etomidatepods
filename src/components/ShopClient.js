@@ -1,224 +1,163 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FaFlask, FaVial, FaTint, FaAppleAlt } from "react-icons/fa";
-import { FiArrowRight, FiCheckCircle, FiXCircle, FiStar, FiFilter, FiShoppingBag, FiChevronRight, FiX } from "react-icons/fi";
+import { FiChevronRight, FiSearch, FiX, FiGrid, FiList } from "react-icons/fi";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-const productIcons = {
-  powder: <FaFlask className="w-16 h-16 text-[#00d4aa]" />,
-  vape: <FaVial className="w-16 h-16 text-[#00d4aa]" />,
-  liquid: <FaTint className="w-16 h-16 text-[#00d4aa]" />,
-  "vape flavours": <FaAppleAlt className="w-16 h-16 text-[#00d4aa]" />,
-};
+import { ProductTile } from "@/components/HomeClient";
+import ProductCard from "@/components/ProductCard";
 
 const categoryInfo = {
-  powder: { label: "Powder / Crystal", icon: <FaFlask className="w-5 h-5" />, heading: "Etomidate Powder / Crystal", desc: "High-purity etomidate powder for research and clinical use." },
-  vape: { label: "Vape / K-Pods", icon: <FaVial className="w-5 h-5" />, heading: "Etomidate Vape / K-Pods", desc: "Precision-formulated etomidate vape cartridges and K-Pod systems." },
-  liquid: { label: "Liquid", icon: <FaTint className="w-5 h-5" />, heading: "Etomidate Liquid", desc: "Pharmaceutical-grade etomidate liquid solutions." },
-  "vape flavours": { label: "Vape Flavours", icon: <FaAppleAlt className="w-5 h-5" />, heading: "Vape Flavours", desc: "Premium flavored etomidate vape products in various fruit and specialty flavors." },
+  powder: { label: "Powder / Crystal", icon: FaFlask, desc: "High-purity etomidate crystal for research and clinical use." },
+  vape: { label: "K-Pods / Vape", icon: FaVial, desc: "Precision-formulated cartridges and K-Pod systems." },
+  liquid: { label: "Liquid", icon: FaTint, desc: "Pharmaceutical-grade liquid solutions in sealed vials." },
+  "vape flavours": { label: "Vape Flavours", icon: FaAppleAlt, desc: "Flavoured pod range in fruit and specialty profiles." },
 };
+const order = ["powder", "vape", "liquid", "vape flavours"];
 
 export default function ShopClient({ products }) {
   const searchParams = useSearchParams();
-  const [activeFilter, setActiveFilter] = useState(() => {
-    const cat = searchParams?.get("category");
-    return cat ? cat : "all";
-  });
-  const heroRef = useRef(null);
-  const categoriesRef = useRef(null);
+  const [filter, setFilter] = useState(() => searchParams?.get("category") || "all");
+  const [query, setQuery] = useState(searchParams?.get("q") || "");
+  const [sort, setSort] = useState("featured");
+  const [view, setView] = useState("grid");
+  const [stockOnly, setStockOnly] = useState(false);
+  const gridRef = useRef(null);
 
-  const categories = ["powder", "vape", "liquid", "vape flavours"].filter((cat) =>
-    products.some((p) => p.category === cat)
-  );
+  const categories = order.filter((c) => products.some((p) => p.category === c));
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    gsap.registerPlugin(ScrollTrigger);
-
-    // Hero animation
-    if (heroRef.current) {
-      const els = heroRef.current.querySelectorAll(".hero-anim");
-      gsap.fromTo(els,
-        { opacity: 0, y: 40 },
-        { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: "power3.out" }
-      );
+  const visible = useMemo(() => {
+    let list = products.filter((p) => (filter === "all" || p.category === filter));
+    if (stockOnly) list = list.filter((p) => p.inStock);
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      list = list.filter((p) => p.name.toLowerCase().includes(q) || (p.shortDescription || "").toLowerCase().includes(q));
     }
-  }, []);
+    const price = (p) => (p.sizes?.length ? Math.min(...p.sizes.map((s) => s.price || 0)) : p.price || 0);
+    if (sort === "low") list = [...list].sort((a, b) => price(a) - price(b));
+    if (sort === "high") list = [...list].sort((a, b) => price(b) - price(a));
+    if (sort === "name") list = [...list].sort((a, b) => a.name.localeCompare(b.name));
+    return list;
+  }, [products, filter, query, sort, stockOnly]);
 
   useEffect(() => {
-    if (!categoriesRef.current) return;
-    const sections = categoriesRef.current.querySelectorAll(".category-section");
-    sections.forEach((section) => {
-      const cards = section.querySelectorAll(".shop-card");
-      gsap.killTweensOf(cards);
-      gsap.fromTo(cards,
-        { opacity: 0, y: 50, scale: 0.96 },
-        {
-          opacity: 1, y: 0, scale: 1,
-          duration: 0.6, stagger: 0.1, ease: "power3.out",
-          scrollTrigger: {
-            trigger: section,
-            start: "top 85%",
-            once: true,
-          },
-        }
-      );
-    });
-    return () => ScrollTrigger.getAll().forEach((t) => t.kill());
-  }, [activeFilter]);
+    if (!gridRef.current) return;
+    const cards = gridRef.current.querySelectorAll(".product-card");
+    gsap.killTweensOf(cards);
+    gsap.fromTo(cards, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.45, stagger: 0.05, ease: "power3.out", clearProps: "transform" });
+  }, [visible, view]);
 
-  const displayCategories = activeFilter === "all"
-    ? categories
-    : categories.filter((c) => c === activeFilter);
+  const active = filter !== "all" ? categoryInfo[filter] : null;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <div ref={heroRef} className="relative overflow-hidden border-b border-gray-200 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 relative z-10">
-          {/* Breadcrumb */}
-          <nav className="hero-anim flex items-center gap-1.5 text-sm text-gray-500 mb-6">
-            <Link href="/" className="hover:text-[#00d4aa] transition-colors">Home</Link>
-            <FiChevronRight className="w-3 h-3" />
-            <span className="text-[#00d4aa] font-medium">Shop</span>
+    <div className="min-h-screen bg-navy">
+      {/* Header band */}
+      <div className="relative overflow-hidden border-b border-line bg-ink">
+        <div className="absolute inset-0 bg-grid bg-grid-fade pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <nav className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-display text-mute mb-6">
+            <Link href="/" className="hover:text-bone">Home</Link>
+            <FiChevronRight className="w-3 h-3 text-ember" />
+            <span className="text-bone">Shop</span>
+            {active && (<><FiChevronRight className="w-3 h-3 text-ember" /><span className="text-ember">{active.label}</span></>)}
           </nav>
-
-          <h1 className="hero-anim text-3xl md:text-4xl font-extrabold text-gray-900 mb-3">
-            All <span className="text-[#00d4aa]">Products</span>
-          </h1>
-          <p className="hero-anim text-gray-600 max-w-xl text-base mb-6">
-            Lab-tested, COA-certified etomidate in three forms. Each product ships within 48h with discreet packaging.
-          </p>
-
-          {/* Filter pills - Teal style like reference */}
-          <div className="hero-anim flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => setActiveFilter("all")}
-              className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all border-2 ${
-                activeFilter === "all"
-                  ? "bg-[#00d4aa] border-[#00d4aa] text-black"
-                  : "bg-white border-gray-300 text-gray-700 hover:border-[#00d4aa] hover:text-[#00d4aa]"
-              }`}
-            >
-              All Products ({products.length})
-            </button>
-            {categories.map((cat) => {
-              const count = products.filter((p) => p.category === cat).length;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setActiveFilter(cat)}
-                  className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all border-2 ${
-                    activeFilter === cat
-                      ? "bg-[#00d4aa] border-[#00d4aa] text-black"
-                      : "bg-white border-gray-300 text-gray-700 hover:border-[#00d4aa] hover:text-[#00d4aa]"
-                  }`}
-                >
-                  {categoryInfo[cat]?.label} ({count})
-                </button>
-              );
-            })}
-            {activeFilter !== "all" && (
-              <button
-                onClick={() => setActiveFilter("all")}
-                className="flex items-center gap-1 px-4 py-2 text-sm text-gray-500 hover:text-[#00d4aa] transition-colors"
-              >
-                <FiX className="w-4 h-4" />
-                Clear all
-              </button>
-            )}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <div>
+              <span className="eyebrow">{active ? "Category" : "Full catalogue"}</span>
+              <h1 className="display text-6xl md:text-7xl mt-4">{active ? active.label : <>All <span className="text-ember">products.</span></>}</h1>
+              <p className="mt-4 text-mute max-w-xl">{active ? active.desc : "Lab-tested, COA-certified etomidate in every format. Dispatched within 24h in plain packaging."}</p>
+            </div>
+            <div className="relative w-full lg:w-80">
+              <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search products…" className="field cut-br" />
+              {query && <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-mute hover:text-bone"><FiX /></button>}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Category Sections */}
-      <div ref={categoriesRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {displayCategories.map((cat, catIdx) => {
-          const catProducts = products.filter((p) => p.category === cat);
-          if (catProducts.length === 0) return null;
-
-          return (
-            <div key={cat} className={`category-section ${catIdx > 0 ? "mt-12 pt-12 border-t border-gray-200" : ""}`}>
-              {/* Category Header */}
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-10 bg-[#00d4aa]/10 border border-[#00d4aa]/20 rounded-xl flex items-center justify-center text-[#00d4aa]">
-                  {categoryInfo[cat]?.icon}
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900">
-                    {categoryInfo[cat]?.heading}
-                  </h2>
-                  <p className="text-sm text-gray-500">{categoryInfo[cat]?.desc}</p>
-                </div>
-                <div className="ml-auto hidden sm:block">
-                  <span className="text-xs text-gray-600 bg-gray-100 border border-gray-200 px-3 py-1 rounded-full">
-                    {catProducts.length} product{catProducts.length !== 1 ? "s" : ""}
-                  </span>
-                </div>
-              </div>
-
-              {/* Product Cards - Clean grid like reference */}
-              <div className={`grid gap-4 ${catProducts.length === 1 ? "grid-cols-1 max-w-sm mx-auto" : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"}`}>
-                {catProducts.map((product) => (
-                  <Link key={product._id} href={`/shop/${product.slug}`} className="block group">
-                    <div className="shop-card bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-200">
-                      {/* Badge */}
-                      <div className="absolute top-2 left-2 z-10">
-                        <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider text-gray-900 bg-[#ff6b6b] px-2 py-1 rounded">
-                          Multi Buy
-                        </span>
-                      </div>
-                      
-                      {/* Image */}
-                      <div className="relative h-48 bg-gray-50 flex items-center justify-center overflow-hidden p-4">
-                        {product.image ? (
-                          <img src={product.image} alt={product.name} className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" />
-                        ) : (
-                          <div className="text-center">
-                            {productIcons[product.category]}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-3">
-                        {/* Name */}
-                        <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-1">{product.name}</h3>
-                        
-                        {/* Price */}
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-lg font-bold text-gray-900">€{product.price?.toFixed(2)}</span>
-                          {product.sizes?.length > 0 && (
-                            <span className="text-xs text-gray-500">{product.sizes[0]?.label}</span>
-                          )}
-                        </div>
-
-                        {/* Quick add button */}
-                        <button className="w-full py-2 bg-[#00d4aa] text-black text-sm font-semibold rounded hover:bg-[#00b894] transition-colors">
-                          Add to Cart
-                        </button>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid lg:grid-cols-12 gap-10">
+        {/* Sidebar filters */}
+        <aside className="lg:col-span-3">
+          <div className="lg:sticky lg:top-28 space-y-8">
+            <div>
+              <h3 className="font-display uppercase tracking-[0.25em] text-xs text-ember mb-4">Category</h3>
+              <ul className="flex lg:flex-col gap-2 overflow-x-auto scroll-hide -mx-4 px-4 lg:mx-0 lg:px-0">
+                <FilterBtn on={filter === "all"} onClick={() => setFilter("all")} label="Everything" count={products.length} />
+                {categories.map((c) => {
+                  const Icon = categoryInfo[c].icon;
+                  return <FilterBtn key={c} on={filter === c} onClick={() => setFilter(c)} label={categoryInfo[c].label} count={products.filter((p) => p.category === c).length} icon={<Icon className="w-4 h-4" />} />;
+                })}
+              </ul>
             </div>
-          );
-        })}
 
-        {displayCategories.length === 0 && (
-          <div className="text-center py-24">
-            <p className="text-gray-500">No products found.</p>
+            <div>
+              <h3 className="font-display uppercase tracking-[0.25em] text-xs text-ember mb-4">Sort</h3>
+              <select value={sort} onChange={(e) => setSort(e.target.value)} className="field field-plain cut-br cursor-pointer">
+                <option value="featured">Featured</option>
+                <option value="low">Price: low to high</option>
+                <option value="high">Price: high to low</option>
+                <option value="name">Name A–Z</option>
+              </select>
+            </div>
+
+            <label className="flex items-center gap-3 cursor-pointer select-none">
+              <span className={`w-10 h-6 flex items-center px-1 transition-colors ${stockOnly ? "bg-ember" : "bg-navy-3"}`} onClick={() => setStockOnly(!stockOnly)}>
+                <span className={`w-4 h-4 bg-white transition-transform ${stockOnly ? "translate-x-4" : ""}`} />
+              </span>
+              <span className="text-sm text-mute">In stock only</span>
+            </label>
+
+            <div className="hidden lg:block panel cut-tl p-5">
+              <p className="font-display uppercase tracking-[0.2em] text-xs text-ember">Bulk pricing</p>
+              <p className="text-sm text-mute mt-2 leading-relaxed">Ordering for a facility? Message us for wholesale tiers and consolidated shipping.</p>
+              <Link href="/contact" className="mt-4 inline-flex text-sm font-display uppercase tracking-[0.15em] text-bone hover:text-ember">Request a quote →</Link>
+            </div>
           </div>
-        )}
+        </aside>
+
+        {/* Results */}
+        <div className="lg:col-span-9">
+          <div className="flex items-center justify-between mb-6 text-sm text-mute">
+            <span><span className="text-bone font-semibold">{visible.length}</span> {visible.length === 1 ? "product" : "products"}</span>
+            <div className="flex items-center gap-1 border border-line">
+              <button onClick={() => setView("grid")} className={`p-2 ${view === "grid" ? "bg-ember text-white" : "hover:text-bone"}`} aria-label="Grid view"><FiGrid /></button>
+              <button onClick={() => setView("list")} className={`p-2 ${view === "list" ? "bg-ember text-white" : "hover:text-bone"}`} aria-label="List view"><FiList /></button>
+            </div>
+          </div>
+
+          <div ref={gridRef}>
+            {visible.length === 0 ? (
+              <div className="panel cut-br p-16 text-center">
+                <p className="display text-3xl">Nothing matches.</p>
+                <p className="text-mute mt-2 text-sm">Try a different category or clear your search.</p>
+                <button onClick={() => { setFilter("all"); setQuery(""); setStockOnly(false); }} className="btn-ghost mt-6 !py-2.5 text-sm">Reset filters</button>
+              </div>
+            ) : view === "grid" ? (
+              <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                {visible.map((p) => <ProductTile key={p._id} product={p} />)}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {visible.map((p) => <ProductCard key={p._id} product={p} />)}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-
-
-
+function FilterBtn({ on, onClick, label, count, icon }) {
+  return (
+    <li className="shrink-0">
+      <button onClick={onClick} className={`w-full flex items-center gap-3 px-4 py-3 border text-left font-display uppercase tracking-[0.12em] text-sm transition-all cut-br ${on ? "bg-ember border-ember text-white" : "border-line text-mute hover:text-bone hover:border-mute"}`}>
+        {icon}
+        {label}
+        <span className={`ml-auto text-xs ${on ? "text-white/70" : "opacity-60"}`}>{count}</span>
+      </button>
+    </li>
+  );
+}

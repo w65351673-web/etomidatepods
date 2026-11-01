@@ -8,8 +8,8 @@ export default function ToastProvider() {
       toastOptions={{
         duration: 3000,
         style: {
-          background: "#1a1a1a",
-          border: "1px solid #00d4aa",
+          background: "#241f48",
+          border: "1px solid #ec5a0e",
           color: "#fff",
           fontSize: "14px",
           borderRadius: "12px",

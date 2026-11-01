@@ -1,85 +1,93 @@
 import Link from "next/link";
-import { FiMail, FiPhone, FiTruck, FiArrowRight } from "react-icons/fi";
-import { FaFlask, FaVial, FaTint } from "react-icons/fa";
+import { FiArrowUpRight } from "react-icons/fi";
+import { FaTelegramPlane, FaWhatsapp, FaBitcoin } from "react-icons/fa";
+import Logo, { LogoMark } from "@/components/Logo";
+
+const shopLinks = [
+  { href: "/shop", label: "All products" },
+  { href: "/shop?category=powder", label: "Powder / Crystal" },
+  { href: "/shop?category=vape", label: "K-Pods (Vape)" },
+  { href: "/shop?category=liquid", label: "Liquid" },
+  { href: "/shop?category=vape%20flavours", label: "Vape flavours" },
+];
+
+const companyLinks = [
+  { href: "/about", label: "About us" },
+  { href: "/contact", label: "Contact" },
+  { href: "/contact", label: "Bulk & wholesale" },
+  { href: "/contact", label: "Shipping & FAQ" },
+];
 
 export default function Footer() {
   return (
-    <footer className="bg-white text-gray-500 mt-auto border-t border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Brand */}
-          <div>
-            <div className="mb-4">
-              <img src="/logo.svg" alt="EtomidateShop.com" className="h-10" />
-            </div>
-            <p className="text-sm leading-relaxed">
-              Premium etomidate products for researchers and licensed buyers. Quality-tested, discreetly shipped worldwide.
-            </p>
-          </div>
+    <footer className="relative mt-auto bg-ink border-t border-line overflow-hidden">
+      <div className="absolute inset-0 bg-grid opacity-70 pointer-events-none" />
+      <div className="absolute -right-20 -bottom-24 w-[520px] opacity-[0.05] pointer-events-none">
+        <LogoMark className="w-full h-auto" color="#ffffff" />
+      </div>
 
-          {/* Quick Links */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* CTA row */}
+        <div className="py-12 grid lg:grid-cols-[1.4fr_1fr] gap-8 items-end border-b border-line">
           <div>
-            <h4 className="text-gray-900 text-sm font-semibold uppercase tracking-wider mb-4">
-              Quick Links
-            </h4>
-            <ul className="space-y-2.5 text-sm">
-              <li>
-                <Link href="/shop" className="flex items-center gap-2 hover:text-gray-900 transition-colors group">
-                  <FiArrowRight className="w-3 h-3 text-[#00d4aa] group-hover:translate-x-0.5 transition-transform" />
-                  Shop All Products
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop?category=powder" className="flex items-center gap-2 hover:text-gray-900 transition-colors group">
-                  <FaFlask className="w-3 h-3 text-[#00d4aa]" />
-                  Etomidate Powder
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop?category=vape" className="flex items-center gap-2 hover:text-gray-900 transition-colors group">
-                  <FaVial className="w-3 h-3 text-[#00d4aa]" />
-                  K-Pods (Vape)
-                </Link>
-              </li>
-              <li>
-                <Link href="/shop?category=liquid" className="flex items-center gap-2 hover:text-gray-900 transition-colors group">
-                  <FaTint className="w-3 h-3 text-[#00d4aa]" />
-                  Etomidate Liquid
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="flex items-center gap-2 hover:text-gray-900 transition-colors group">
-                  <FiArrowRight className="w-3 h-3 text-[#00d4aa] group-hover:translate-x-0.5 transition-transform" />
-                  About Us
-                </Link>
-              </li>
-            </ul>
+            <span className="eyebrow">Ready when you are</span>
+            <h2 className="display text-4xl md:text-6xl mt-4">
+              Order in <span className="text-ember">two taps.</span>
+              <br />
+              <span className="outline-text">WhatsApp or Telegram.</span>
+            </h2>
           </div>
-
-          {/* Contact */}
-          <div>
-            <h4 className="text-gray-900 text-sm font-semibold uppercase tracking-wider mb-4">
-              Contact
-            </h4>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2.5">
-                <FiMail className="w-4 h-4 text-[#00d4aa] shrink-0" />
-                orders@etomidateshop.com
-              </li>
-              <li className="flex items-start gap-2.5 pt-2 text-xs">
-                <FiTruck className="w-4 h-4 text-[#00d4aa] shrink-0 mt-0.5" />
-                All orders shipped within 48h via tracked, discreet packaging.
-              </li>
-            </ul>
+          <div className="flex flex-wrap gap-3 lg:justify-end">
+            <a href="https://wa.me/19852913802" target="_blank" rel="noopener noreferrer" className="btn-ember"><FaWhatsapp className="w-4 h-4" /> WhatsApp</a>
+            <a href="https://t.me/chemsolution12maa" target="_blank" rel="noopener noreferrer" className="btn-ghost"><FaTelegramPlane className="w-4 h-4" /> Telegram</a>
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-10 pt-6 text-center text-xs">
-          &copy; {new Date().getFullYear()} EtomidateShop.com — All rights reserved.
+        {/* Link columns */}
+        <div className="py-14 grid grid-cols-2 md:grid-cols-12 gap-10">
+          <div className="col-span-2 md:col-span-6">
+            <Logo mark="h-10 w-auto" text="text-2xl" />
+            <p className="mt-5 text-sm text-mute leading-relaxed max-w-sm">
+              EtomidatePods supplies lab-verified etomidate powder, K-Pods and liquid to research buyers worldwide.
+              Every batch ships with a certificate of analysis in plain, tracked packaging.
+            </p>
+            <div className="mt-6 flex items-center gap-2 text-xs text-mute">
+              <FaBitcoin className="w-4 h-4 text-[#f7931a]" /> Bitcoin accepted
+            </div>
+          </div>
+
+          <div className="md:col-span-3">
+            <h4 className="font-display uppercase tracking-[0.25em] text-xs text-ember mb-5">Shop</h4>
+            <ul className="space-y-3">
+              {shopLinks.map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className="group inline-flex items-center gap-2 text-sm text-mute hover:text-bone transition-colors">
+                    {l.label}
+                    <FiArrowUpRight className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity text-ember" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="md:col-span-3">
+            <h4 className="font-display uppercase tracking-[0.25em] text-xs text-ember mb-5">Company</h4>
+            <ul className="space-y-3">
+              {companyLinks.map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className="text-sm text-mute hover:text-bone transition-colors">{l.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+        </div>
+
+        <div className="py-6 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-mute">
+          <span>&copy; {new Date().getFullYear()} EtomidatePods. All rights reserved.</span>
+          <span className="font-display uppercase tracking-[0.25em]">For research use only</span>
         </div>
       </div>
     </footer>
   );
 }
-
-

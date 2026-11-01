@@ -6,16 +6,12 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { FaFlask, FaVial, FaTint, FaAppleAlt, FaWhatsapp, FaTelegramPlane, FaBitcoin } from "react-icons/fa";
 import { FiUser, FiMapPin, FiMessageSquare, FiAtSign, FiChevronRight, FiLoader, FiArrowLeft, FiPackage, FiShield, FiTruck } from "react-icons/fi";
+import ProtectedImage from "@/components/ProtectedImage";
 
-const WHATSAPP_NUMBER = "15125922145";
-const TELEGRAM_USERNAME = "chemsolution12mal";
+const WHATSAPP_NUMBER = "19852913802";
+const TELEGRAM_USERNAME = "chemsolution12maa";
 
-const categoryIcons = {
-  powder: <FaFlask className="w-10 h-10 text-[#00d4aa]" />,
-  vape: <FaVial className="w-10 h-10 text-[#00d4aa]" />,
-  liquid: <FaTint className="w-10 h-10 text-[#00d4aa]" />,
-  flavours: <FaAppleAlt className="w-10 h-10 text-[#00d4aa]" />,
-};
+const icons = { powder: FaFlask, vape: FaVial, liquid: FaTint, "vape flavours": FaAppleAlt };
 
 export default function OrderPage() {
   const { slug } = useParams();
@@ -45,22 +41,23 @@ export default function OrderPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <FiLoader className="w-8 h-8 text-[#00d4aa] animate-spin mx-auto mb-3" />
-        <p className="text-gray-500">Loading...</p>
+      <div className="max-w-7xl mx-auto px-4 py-32 text-center">
+        <FiLoader className="w-8 h-8 text-ember animate-spin mx-auto mb-3" />
+        <p className="text-mute font-display uppercase tracking-[0.2em] text-xs">Loading…</p>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <h1 className="text-2xl font-bold mb-4 text-gray-900">Product Not Found</h1>
-        <Link href="/shop" className="text-[#00d4aa] hover:underline">Back to Shop</Link>
+      <div className="max-w-7xl mx-auto px-4 py-32 text-center">
+        <h1 className="display text-5xl mb-6">Product not found</h1>
+        <Link href="/shop" className="btn-ghost">Back to shop</Link>
       </div>
     );
   }
 
+  const Icon = icons[product.category] || FaFlask;
   const currentPrice = product.sizes?.[selectedSize]?.price || product.price || 0;
 
   const getCountry = () => {
@@ -81,9 +78,9 @@ export default function OrderPage() {
   const buildOrderMessage = () => {
     const size = product.sizes?.[selectedSize]?.label || "Standard";
     return [
-      "Hello EtomidateShop team! 👋",
+      "Hello EtomidatePods team! 👋",
       "",
-      "I'd love to place an order through your website (etomidateshop.com):",
+      "I'd love to place an order through your website (etomidatepods.com):",
       "",
       `🛍️ Product: ${product.name}`,
       `📦 Quantity: ${size}`,
@@ -118,242 +115,167 @@ export default function OrderPage() {
     }
   };
 
+  const labelCls = "block font-display uppercase tracking-[0.2em] text-[10px] text-mute mb-2";
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="min-h-screen bg-navy">
+      <div className="relative border-b border-line bg-ink overflow-hidden">
+        <div className="absolute inset-0 bg-grid bg-grid-fade pointer-events-none" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <nav className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-display text-mute mb-5">
+            <Link href="/" className="hover:text-bone">Home</Link>
+            <FiChevronRight className="w-3 h-3 text-ember" />
+            <Link href="/shop" className="hover:text-bone">Shop</Link>
+            <FiChevronRight className="w-3 h-3 text-ember" />
+            <Link href={`/shop/${product.slug}`} className="hover:text-bone truncate max-w-[140px]">{product.name}</Link>
+            <FiChevronRight className="w-3 h-3 text-ember" />
+            <span className="text-ember">Order</span>
+          </nav>
+          <span className="eyebrow">Checkout</span>
+          <h1 className="display text-5xl md:text-7xl mt-3">Confirm your <span className="text-ember">order.</span></h1>
+        </div>
+      </div>
 
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-[#00d4aa] transition-colors">Home</Link>
-          <FiChevronRight className="w-3 h-3" />
-          <Link href="/shop" className="hover:text-[#00d4aa] transition-colors">Shop</Link>
-          <FiChevronRight className="w-3 h-3" />
-          <Link href={`/shop/${product.slug}`} className="hover:text-[#00d4aa] transition-colors truncate max-w-[120px]">{product.name}</Link>
-          <FiChevronRight className="w-3 h-3" />
-          <span className="text-[#00d4aa] font-medium">Order</span>
-        </nav>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid lg:grid-cols-12 gap-10">
+        {/* Summary column */}
+        <motion.aside initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="lg:col-span-5 space-y-5">
+          <Link href={`/shop/${product.slug}`} className="inline-flex items-center gap-2 text-xs font-display uppercase tracking-[0.2em] text-mute hover:text-ember">
+            <FiArrowLeft className="w-3.5 h-3.5" /> Back to product
+          </Link>
 
-        {/* Back link */}
-        <Link href={`/shop/${product.slug}`} className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-[#00d4aa] transition-colors mb-6">
-          <FiArrowLeft className="w-3.5 h-3.5" />
-          Back to product
-        </Link>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="space-y-6"
-        >
-          {/* Product Summary Card */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-center shrink-0 overflow-hidden">
-                {product.image ? (
-                  <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-                ) : (
-                  categoryIcons[product.category]
-                )}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-[#00d4aa] uppercase tracking-wider mb-0.5 capitalize">{product.category}</p>
-                <h1 className="text-lg font-extrabold text-gray-900 leading-tight">{product.name}</h1>
-              </div>
-              <div className="text-right shrink-0">
-                <p className="text-xs text-gray-400 uppercase tracking-wider mb-0.5">Total</p>
-                <p className="text-2xl font-extrabold text-[#00d4aa]">€{currentPrice.toFixed(2)}</p>
-              </div>
+          <div className="panel cut-tl cut-br overflow-hidden">
+            <div className="relative aspect-[16/9] bg-ink image-container no-context-menu">
+              {product.image ? (
+                <ProtectedImage src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              ) : (
+                <div className="absolute inset-0 bg-grid flex items-center justify-center"><Icon className="w-16 h-16 text-ember" /></div>
+              )}
             </div>
-
-            {/* Selected quantity row */}
-            <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-sm text-gray-500">Selected quantity</span>
-              <span className="text-sm font-bold text-gray-900 bg-[#00d4aa]/10 text-[#00b894] px-3 py-1 rounded-full">
-                {product.sizes?.[selectedSize]?.label || "Standard"}
-              </span>
+            <div className="p-6">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-ember font-display">{product.category}</p>
+              <h2 className="display text-3xl mt-1">{product.name}</h2>
+              <dl className="mt-5 divide-y divide-line border-y border-line text-sm">
+                <div className="flex justify-between py-3"><dt className="text-mute">Quantity</dt><dd className="font-semibold">{product.sizes?.[selectedSize]?.label || "Standard"}</dd></div>
+                <div className="flex justify-between py-3"><dt className="text-mute">Payment</dt><dd className="font-semibold flex items-center gap-1.5"><FaBitcoin className="text-[#f7931a]" /> Bitcoin</dd></div>
+                <div className="flex justify-between py-3"><dt className="text-mute">Shipping</dt><dd className="font-semibold">Tracked, plain packaging</dd></div>
+              </dl>
+              <div className="mt-5 flex items-end justify-between">
+                <span className="font-display uppercase tracking-[0.25em] text-xs text-mute">Total</span>
+                <span className="display text-5xl text-ember">€{currentPrice.toFixed(2)}</span>
+              </div>
             </div>
           </div>
 
-          {/* Quantity Selector */}
           {product.sizes?.length > 0 && (
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">
-                Choose Quantity
-              </h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {product.sizes.map((size, i) => (
-                  <button
-                    key={size.label}
-                    onClick={() => setSelectedSize(i)}
-                    className={`px-4 py-3.5 rounded-xl border text-sm font-medium transition-all text-center ${
-                      selectedSize === i
-                        ? "bg-[#00d4aa] text-black border-[#00d4aa] shadow-sm"
-                        : "bg-white text-gray-700 border-gray-200 hover:border-[#00d4aa] hover:bg-[#00d4aa]/5"
-                    }`}
-                  >
-                    <span className="block font-bold">{size.label}</span>
-                    <span className={`text-sm mt-0.5 block ${selectedSize === i ? "text-black/70" : "text-[#00b894]"}`}>€{size.price.toFixed(2)}</span>
-                  </button>
-                ))}
+            <div className="panel cut-br p-6">
+              <h3 className="font-display uppercase tracking-[0.25em] text-xs text-mute mb-4">Change quantity</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {product.sizes.map((size, i) => {
+                  const on = selectedSize === i;
+                  return (
+                    <button key={size.label} onClick={() => setSelectedSize(i)} className={`cut-br border px-3 py-3 text-left transition-all ${on ? "bg-ember border-ember text-white" : "border-line text-bone hover:border-mute"}`}>
+                      <span className="block font-display font-bold uppercase tracking-wide text-sm">{size.label}</span>
+                      <span className={`text-xs ${on ? "text-white/80" : "text-mute"}`}>€{size.price.toFixed(2)}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
-          {/* Order Form */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-            <h3 className="flex items-center gap-2 text-lg font-extrabold text-gray-900 mb-6">
-              <FiUser className="w-5 h-5 text-[#00d4aa]" />
-              Your Details
-            </h3>
-
-            <form onSubmit={handleOrder} className="space-y-4">
-              {/* Payment method notice */}
-              <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
-                <FaBitcoin className="w-6 h-6 text-[#f7931a] shrink-0" />
-                <p className="text-xs text-amber-800">
-                  <span className="font-bold">We accept Bitcoin (BTC) only.</span>{" "}
-                  Our wallet address and payment instructions will be shared in the chat after you send your order.
-                </p>
-              </div>
-
-              {/* Step 1 — choose channel */}
-              <div className="grid sm:grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setChannel("whatsapp")}
-                  className={`flex items-center justify-center gap-2 bg-[#25d366] text-white font-bold py-4 rounded-xl transition-all text-base ${
-                    channel === "whatsapp"
-                      ? "ring-2 ring-offset-2 ring-[#25d366] shadow-lg shadow-[#25d366]/30 scale-[1.02]"
-                      : channel
-                        ? "opacity-60 hover:opacity-90"
-                        : "hover:bg-[#1ebe5d] hover:shadow-lg hover:shadow-[#25d366]/25"
-                  }`}
-                >
-                  <FaWhatsapp className="w-5 h-5" />
-                  Order via WhatsApp
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setChannel("telegram")}
-                  className={`flex items-center justify-center gap-2 bg-[#0088cc] text-white font-bold py-4 rounded-xl transition-all text-base ${
-                    channel === "telegram"
-                      ? "ring-2 ring-offset-2 ring-[#0088cc] shadow-lg shadow-[#0088cc]/30 scale-[1.02]"
-                      : channel
-                        ? "opacity-60 hover:opacity-90"
-                        : "hover:bg-[#0077b5] hover:shadow-lg hover:shadow-[#0088cc]/25"
-                  }`}
-                >
-                  <FaTelegramPlane className="w-5 h-5" />
-                  Order via Telegram
-                </button>
-              </div>
-
-              {!channel ? (
-                <p className="text-sm text-gray-500 text-center bg-[#00d4aa]/5 border border-[#00d4aa]/20 rounded-xl px-4 py-3">
-                  Choose WhatsApp or Telegram above — each option has its own requirements.
-                </p>
-              ) : (
-              <>
-              <p className="text-xs text-gray-500 text-center bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5">
-                {channel === "whatsapp"
-                  ? "We need your name and shipping address — your order opens in WhatsApp ready to send."
-                  : "Telegram orders need your @username so we can reply — our chat opens with your order copied, just paste and send."}
-              </p>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Full Name</label>
-                <div className="relative">
-                  <FiUser className="absolute left-3.5 top-3 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="John Doe"
-                    required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4aa] focus:border-transparent placeholder:text-gray-400"
-                  />
-                </div>
-              </div>
-
-              {channel === "telegram" && (
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Telegram Username</label>
-                  <div className="relative">
-                    <FiAtSign className="absolute left-3.5 top-3 w-4 h-4 text-gray-400" />
-                    <input
-                      type="text"
-                      placeholder="@yourusername"
-                      required
-                      value={form.telegramUser}
-                      onChange={(e) => setForm({ ...form, telegramUser: e.target.value })}
-                      className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0088cc] focus:border-transparent placeholder:text-gray-400"
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Shipping Address</label>
-                <div className="relative">
-                  <FiMapPin className="absolute left-3.5 top-3 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="123 Main St, Berlin, Germany"
-                    required
-                    value={form.address}
-                    onChange={(e) => setForm({ ...form, address: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4aa] focus:border-transparent placeholder:text-gray-400"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Message <span className="text-gray-400 font-normal normal-case">(optional)</span></label>
-                <div className="relative">
-                  <FiMessageSquare className="absolute left-3.5 top-3 w-4 h-4 text-gray-400" />
-                  <textarea
-                    placeholder="Any special requests or questions..."
-                    rows={3}
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 text-gray-900 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#00d4aa] focus:border-transparent placeholder:text-gray-400 resize-none"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className={`w-full flex items-center justify-center gap-2 text-white font-bold py-4 rounded-xl transition-all text-base mt-2 ${
-                  channel === "whatsapp"
-                    ? "bg-[#25d366] hover:bg-[#1ebe5d] hover:shadow-lg hover:shadow-[#25d366]/25"
-                    : "bg-[#0088cc] hover:bg-[#0077b5] hover:shadow-lg hover:shadow-[#0088cc]/25"
-                }`}
-              >
-                {channel === "whatsapp" ? <FaWhatsapp className="w-5 h-5" /> : <FaTelegramPlane className="w-5 h-5" />}
-                {channel === "whatsapp"
-                  ? `Send Order on WhatsApp — €${currentPrice.toFixed(2)}`
-                  : `Send Order on Telegram — €${currentPrice.toFixed(2)}`}
-              </button>
-              </>
-              )}
-            </form>
-          </div>
-
-          {/* Trust badges */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-px bg-line border border-line">
             {[
-              { icon: FaBitcoin, label: "BTC Payments" },
-              { icon: FiShield, label: "Secure Order" },
-              { icon: FiTruck, label: "Discreet Shipping" },
-              { icon: FiPackage, label: "COA Included" },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="bg-white border border-gray-200 rounded-xl p-3 flex flex-col items-center gap-1.5 shadow-sm">
-                <Icon className="w-5 h-5 text-[#00d4aa]" />
-                <span className="text-xs font-semibold text-gray-600 text-center">{label}</span>
+              { icon: FaBitcoin, label: "BTC payments" },
+              { icon: FiShield, label: "Secure order" },
+              { icon: FiTruck, label: "Discreet shipping" },
+              { icon: FiPackage, label: "COA included" },
+            ].map(({ icon: I, label }) => (
+              <div key={label} className="bg-navy p-4 flex flex-col items-center gap-2 text-center">
+                <I className="w-5 h-5 text-ember" />
+                <span className="text-[10px] font-display uppercase tracking-[0.15em] text-mute">{label}</span>
               </div>
             ))}
           </div>
+        </motion.aside>
 
+        {/* Form column */}
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="lg:col-span-7">
+          <form onSubmit={handleOrder} className="panel cut-tl cut-br p-8 md:p-10 space-y-6">
+            <div className="flex items-start gap-4 bg-[#f7931a]/10 border border-[#f7931a]/40 p-4">
+              <FaBitcoin className="w-6 h-6 text-[#f7931a] shrink-0" />
+              <p className="text-sm text-bone/90"><span className="font-bold">We accept Bitcoin (BTC) only.</span> Wallet address and payment instructions are shared in the chat after you send your order.</p>
+            </div>
+
+            <div>
+              <p className="font-display uppercase tracking-[0.25em] text-xs text-ember mb-1">Step 1</p>
+              <h3 className="display text-3xl mb-4">Choose a channel</h3>
+              <div className="grid sm:grid-cols-2 gap-3">
+                {[
+                  { id: "whatsapp", icon: FaWhatsapp, label: "WhatsApp", color: "#25d366" },
+                  { id: "telegram", icon: FaTelegramPlane, label: "Telegram", color: "#2aa3e0" },
+                ].map(({ id, icon: I, label, color }) => {
+                  const on = channel === id;
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => setChannel(id)}
+                      className={`cut-br flex items-center justify-center gap-3 py-4 font-display font-bold uppercase tracking-[0.1em] text-base transition-all border ${on ? "text-white" : channel ? "opacity-50 hover:opacity-90 text-bone border-line" : "text-bone border-line hover:border-mute"}`}
+                      style={on ? { background: color, borderColor: color } : undefined}
+                    >
+                      <I className="w-5 h-5" style={!on ? { color } : undefined} /> Order via {label}
+                    </button>
+                  );
+                })}
+              </div>
+              {!channel && <p className="mt-3 text-xs text-mute text-center">Each option has its own requirements — pick one to continue.</p>}
+            </div>
+
+            {channel && (
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-5">
+                <div>
+                  <p className="font-display uppercase tracking-[0.25em] text-xs text-ember mb-1">Step 2</p>
+                  <h3 className="display text-3xl">Your details</h3>
+                  <p className="text-xs text-mute mt-2">
+                    {channel === "whatsapp"
+                      ? "We need your name and shipping address — your order opens in WhatsApp ready to send."
+                      : "Telegram orders need your @username so we can reply — our chat opens with your order copied, just paste and send."}
+                  </p>
+                </div>
+
+                <label className="block">
+                  <span className={labelCls}>Full name</span>
+                  <div className="relative"><FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute" /><input type="text" placeholder="John Doe" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="field cut-br" /></div>
+                </label>
+
+                {channel === "telegram" && (
+                  <label className="block">
+                    <span className={labelCls}>Telegram username</span>
+                    <div className="relative"><FiAtSign className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute" /><input type="text" placeholder="@yourusername" required value={form.telegramUser} onChange={(e) => setForm({ ...form, telegramUser: e.target.value })} className="field cut-br" /></div>
+                  </label>
+                )}
+
+                <label className="block">
+                  <span className={labelCls}>Shipping address</span>
+                  <div className="relative"><FiMapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute" /><input type="text" placeholder="123 Main St, Berlin, Germany" required value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="field cut-br" /></div>
+                </label>
+
+                <label className="block">
+                  <span className={labelCls}>Message <span className="normal-case tracking-normal">(optional)</span></span>
+                  <div className="relative"><FiMessageSquare className="absolute left-3.5 top-4 w-4 h-4 text-mute" /><textarea placeholder="Any special requests or questions…" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className="field cut-br resize-none" /></div>
+                </label>
+
+                <button
+                  type="submit"
+                  className="w-full flex items-center justify-center gap-3 text-white font-display font-bold uppercase tracking-[0.1em] py-4 cut-br transition-all hover:brightness-110"
+                  style={{ background: channel === "whatsapp" ? "#25d366" : "#2aa3e0" }}
+                >
+                  {channel === "whatsapp" ? <FaWhatsapp className="w-5 h-5" /> : <FaTelegramPlane className="w-5 h-5" />}
+                  Send order on {channel === "whatsapp" ? "WhatsApp" : "Telegram"} — €{currentPrice.toFixed(2)}
+                </button>
+              </motion.div>
+            )}
+          </form>
         </motion.div>
       </div>
     </div>
