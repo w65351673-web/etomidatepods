@@ -49,7 +49,7 @@ export default function ProductDetailClient({ product }) {
               {[
                 { icon: FiFileText, t: "COA included" },
                 { icon: FiShield, t: "≥ 99.8% purity" },
-                { icon: FiTruck, t: "Ships in 24h" },
+                { icon: FiTruck, t: "Ships in 72h" },
               ].map(({ icon: I, t }) => (
                 <div key={t} className="bg-navy p-4 flex items-center gap-3 text-xs sm:text-sm text-mute"><I className="w-4 h-4 text-ember shrink-0" /> {t}</div>
               ))}
