@@ -26,7 +26,7 @@ export const metadata = {
     template: "%s | EtomidatePods.com",
   },
   description:
-    "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity. COA certified, discreet worldwide shipping within 24h.",
+    "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity. COA certified, discreet worldwide shipping within 72h.",
   keywords: [
     "buy etomidate online",
     "etomidate for sale",
@@ -150,9 +150,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Etomidate Pods — Premium Powder, Vape & Liquid",
+    title: "EtomidatePods — Premium K-Pods, Powder & Liquid",
     description:
-      "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid. Lab-tested ≥99.8% purity. Ships worldwide within 24h.",
+      "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid. Lab-tested ≥99.8% purity. Ships worldwide within 72h.",
   },
   robots: {
     index: true,

@@ -6,9 +6,9 @@ import HomeClient from "@/components/HomeClient";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Etomidate Pods — Premium Powder, K-Pods Vape & Liquid",
+  title: "EtomidatePods — Premium K-Pods, Powder & Liquid",
   description:
-    "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity. COA certified, fast discreet worldwide shipping within 24h.",
+    "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity. COA certified, fast discreet worldwide shipping within 72h.",
   keywords: [
     "buy etomidate online",
     "etomidate for sale",
@@ -22,7 +22,7 @@ export const metadata = {
     "HPLC verified etomidate",
     "research grade etomidate",
     "discreet etomidate shipping",
-    "etomidate worldwide delivery 24h",
+    "etomidate worldwide delivery 72h",
     "etomidate bulk discount",
     "best etomidate supplier",
     "trusted etomidate vendor",
@@ -47,7 +47,7 @@ export const metadata = {
     "etomidate 33125-97-2",
   ],
   openGraph: {
-    title: "Etomidate Pods — Premium Powder, Vape & Liquid",
+    title: "EtomidatePods — Premium K-Pods, Powder & Liquid",
     description:
       "EtomidatePods.com — Premium etomidate powder, K-Pods vape cartridges & liquid. ≥99.8% purity, lab-tested with COA. Fast discreet shipping worldwide.",
     url: "https://etomidatepods.com",
@@ -56,9 +56,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Etomidate Pods — Premium Powder, Vape & Liquid",
+    title: "EtomidatePods — Premium K-Pods, Powder & Liquid",
     description:
-      "EtomidatePods.com — Premium etomidate powder, K-Pods vape & liquid. ≥99.8% purity, lab-tested, COA included. Ships worldwide within 24h.",
+      "EtomidatePods.com — Premium etomidate powder, K-Pods vape & liquid. ≥99.8% purity, lab-tested, COA included. Ships worldwide within 72h.",
   },
   alternates: {
     canonical: "https://etomidatepods.com",

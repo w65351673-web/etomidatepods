@@ -66,7 +66,7 @@ export default function ShopClient({ products }) {
             <div>
               <span className="eyebrow">{active ? "Category" : "Full catalogue"}</span>
               <h1 className="display text-6xl md:text-7xl mt-4">{active ? active.label : <>All <span className="text-ember">products.</span></>}</h1>
-              <p className="mt-4 text-mute max-w-xl">{active ? active.desc : "Lab-tested, COA-certified etomidate in every format. Dispatched within 24h in plain packaging."}</p>
+              <p className="mt-4 text-mute max-w-xl">{active ? active.desc : "Lab-tested, COA-certified etomidate in every format. Dispatched within 72h in plain packaging."}</p>
             </div>
             <div className="relative w-full lg:w-80">
               <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-mute" />

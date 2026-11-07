@@ -8,8 +8,8 @@ import { FaFlask, FaVial, FaTint, FaAppleAlt, FaWhatsapp, FaTelegramPlane, FaBit
 import { FiUser, FiMapPin, FiMessageSquare, FiAtSign, FiChevronRight, FiLoader, FiArrowLeft, FiPackage, FiShield, FiTruck } from "react-icons/fi";
 import ProtectedImage from "@/components/ProtectedImage";
 
-const WHATSAPP_NUMBER = "19852913802";
-const TELEGRAM_USERNAME = "chemsolution12maa";
+const WHATSAPP_NUMBER = "13468721280";
+const TELEGRAM_USERNAME = "Zhong5cla";
 
 const icons = { powder: FaFlask, vape: FaVial, liquid: FaTint, "vape flavours": FaAppleAlt };
 

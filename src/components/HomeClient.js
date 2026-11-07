@@ -23,7 +23,7 @@ const categoryMeta = {
 };
 const categoryOrder = ["vape", "powder", "liquid", "vape flavours"];
 
-const ticker = ["≥99.8% purity", "COA with every batch", "Ships within 24h", "50+ countries", "Plain packaging", "Bitcoin accepted", "Human support 24/7"];
+const ticker = ["≥99.8% purity", "COA with every batch", "Ships within 72h", "50+ countries", "Plain packaging", "Bitcoin accepted", "Human support 24/7"];
 
 export default function HomeClient({ products = [], siteSettings = {} }) {
   const settings = siteSettings || {};
@@ -87,7 +87,7 @@ function Hero({ announcement, subtitle, productCount }) {
           <motion.dl variants={rise} initial="hidden" animate="visible" custom={4} className="mt-12 grid grid-cols-3 max-w-lg divide-x divide-line border-y border-line">
             {[
               ["99.8%", "min. purity"],
-              ["24h", "dispatch"],
+              ["72h", "dispatch"],
               [productCount > 0 ? `${productCount}` : "3", "product lines"],
             ].map(([v, l]) => (
               <div key={l} className="py-5 px-4 first:pl-0">
@@ -314,7 +314,7 @@ function Process() {
     { icon: HiOutlineBeaker, title: "Choose the format", text: "Pick powder, K-Pods, liquid or flavoured pods and select your quantity." },
     { icon: FaWhatsapp, title: "Send the order", text: "One tap opens WhatsApp or Telegram with your order pre-filled." },
     { icon: FaBitcoin, title: "Pay in Bitcoin", text: "We confirm stock and share the wallet address in the same chat." },
-    { icon: HiOutlineTruck, title: "Tracked delivery", text: "Plain packaging dispatched within 24h, tracking number shared." },
+    { icon: HiOutlineTruck, title: "Tracked delivery", text: "Plain packaging dispatched within 72h, tracking number shared." },
   ];
   return (
     <section className="py-24 bg-navy">
@@ -418,8 +418,8 @@ function PromiseSection() {
             ))}
           </ul>
           <div className="mt-10 flex flex-wrap gap-3">
-            <a href="https://wa.me/19852913802" target="_blank" rel="noopener noreferrer" className="btn-ember"><FaWhatsapp className="w-4 h-4" /> Talk to us</a>
-            <a href="https://t.me/chemsolution12maa" target="_blank" rel="noopener noreferrer" className="btn-ghost"><FaTelegramPlane className="w-4 h-4" /> Telegram</a>
+            <a href="https://wa.me/13468721280" target="_blank" rel="noopener noreferrer" className="btn-ember"><FaWhatsapp className="w-4 h-4" /> Talk to us</a>
+            <a href="https://t.me/Zhong5cla" target="_blank" rel="noopener noreferrer" className="btn-ghost"><FaTelegramPlane className="w-4 h-4" /> Telegram</a>
           </div>
         </motion.div>
 

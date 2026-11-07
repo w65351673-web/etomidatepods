@@ -38,8 +38,8 @@ export default function Footer() {
             </h2>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
-            <a href="https://wa.me/19852913802" target="_blank" rel="noopener noreferrer" className="btn-ember"><FaWhatsapp className="w-4 h-4" /> WhatsApp</a>
-            <a href="https://t.me/chemsolution12maa" target="_blank" rel="noopener noreferrer" className="btn-ghost"><FaTelegramPlane className="w-4 h-4" /> Telegram</a>
+            <a href="https://wa.me/13468721280" target="_blank" rel="noopener noreferrer" className="btn-ember"><FaWhatsapp className="w-4 h-4" /> WhatsApp</a>
+            <a href="https://t.me/Zhong5cla" target="_blank" rel="noopener noreferrer" className="btn-ghost"><FaTelegramPlane className="w-4 h-4" /> Telegram</a>
           </div>
         </div>
 

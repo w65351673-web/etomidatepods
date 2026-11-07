@@ -5,7 +5,7 @@ import ShopClient from "@/components/ShopClient";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Shop Etomidate Products — Powder, K-Pods Vape & Liquid | EtomidatePods.com",
+  title: "Shop Etomidate Products — K-Pods, Powder & Liquid | EtomidatePods.com",
   description:
     "Shop premium etomidate products at EtomidatePods.com. Etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity, COA with every order. Discreet worldwide shipping.",
   keywords: [
@@ -66,7 +66,7 @@ export const metadata = {
     "16145-71-4 for sale",
   ],
   openGraph: {
-    title: "Shop Etomidate Products — Powder, K-Pods Vape & Liquid",
+    title: "Shop Etomidate Products — K-Pods, Powder & Liquid",
     description:
       "EtomidatePods.com — Buy etomidate powder, K-Pods vape cartridges & liquid solutions. Lab-tested ≥99.8% purity, COA included. Discreet worldwide shipping.",
     url: "https://etomidatepods.com/shop",

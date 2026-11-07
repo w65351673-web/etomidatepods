@@ -40,10 +40,10 @@ export default function Navbar() {
       {/* Top strip */}
       <div className="bg-ember text-white text-[11px] font-semibold tracking-[0.25em] uppercase">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-between font-display">
-          <span className="truncate">Lab-tested &middot; COA on every batch &middot; Ships in 24h</span>
+          <span className="truncate">Lab-tested &middot; COA on every batch &middot; Ships in 72h</span>
           <span className="hidden sm:flex items-center gap-4">
-            <a href="https://t.me/chemsolution12maa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-ink transition-colors"><FaTelegramPlane /> Telegram</a>
-            <a href="https://wa.me/19852913802" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-ink transition-colors"><FaWhatsapp /> WhatsApp</a>
+            <a href="https://t.me/Zhong5cla" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-ink transition-colors"><FaTelegramPlane /> Telegram</a>
+            <a href="https://wa.me/13468721280" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-ink transition-colors"><FaWhatsapp /> WhatsApp</a>
           </span>
         </div>
       </div>
@@ -144,8 +144,8 @@ export default function Navbar() {
                 <div className="flex items-center justify-between text-xs text-mute">
                   <span className="flex items-center gap-2"><LogoMark className="h-4 w-auto" /> EtomidatePods</span>
                   <span className="flex items-center gap-3">
-                    <a href="https://t.me/chemsolution12maa" target="_blank" rel="noopener noreferrer" className="hover:text-ember"><FaTelegramPlane className="w-4 h-4" /></a>
-                    <a href="https://wa.me/19852913802" target="_blank" rel="noopener noreferrer" className="hover:text-ember"><FaWhatsapp className="w-4 h-4" /></a>
+                    <a href="https://t.me/Zhong5cla" target="_blank" rel="noopener noreferrer" className="hover:text-ember"><FaTelegramPlane className="w-4 h-4" /></a>
+                    <a href="https://wa.me/13468721280" target="_blank" rel="noopener noreferrer" className="hover:text-ember"><FaWhatsapp className="w-4 h-4" /></a>
                   </span>
                 </div>
               </div>

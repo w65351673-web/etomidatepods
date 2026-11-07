@@ -6,7 +6,7 @@ import { FiUser, FiSend, FiMessageSquare, FiLoader, FiCheckCircle, FiArrowRight,
 import { FaWhatsapp, FaTelegramPlane } from "react-icons/fa";
 
 const faqs = [
-  { q: "How long does shipping take?", a: "Orders are processed within 24–48h. Standard delivery is 3–7 business days within Europe; 7–14 days elsewhere." },
+  { q: "How long does shipping take?", a: "Orders are processed within 72h. Standard delivery is 3–7 business days within Europe; 7–14 days elsewhere." },
   { q: "Do you offer bulk pricing?", a: "Yes. Tell us your quantities and destination and we'll send a wholesale quote with consolidated shipping." },
   { q: "Is shipping discreet?", a: "Always. Plain, unmarked packaging with no product references, vacuum-sealed and tamper-evident." },
   { q: "What payment methods do you accept?", a: "Bitcoin (BTC). The wallet address is shared in chat after your order is confirmed." },
@@ -45,8 +45,8 @@ export default function ContactPage() {
   };
 
   const channels = [
-    { icon: FaWhatsapp, label: "WhatsApp", value: "+1 985 291 3802", note: "Fastest — usually under 2h", href: "https://wa.me/19852913802", accent: "#25d366" },
-    { icon: FaTelegramPlane, label: "Telegram", value: "@chemsolution12maa", note: "Order is copied for you to paste", href: "https://t.me/chemsolution12maa", accent: "#2aa3e0" },
+    { icon: FaWhatsapp, label: "WhatsApp", value: "+1 346 872 1280", note: "Fastest — usually under 2h", href: "https://wa.me/13468721280", accent: "#25d366" },
+    { icon: FaTelegramPlane, label: "Telegram", value: "@Zhong5cla", note: "Order is copied for you to paste", href: "https://t.me/Zhong5cla", accent: "#2aa3e0" },
   ];
 
   return (

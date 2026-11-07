@@ -4,8 +4,8 @@ import { FiMessageCircle, FiX } from "react-icons/fi";
 import { FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
 
 const links = [
-  { label: "Telegram", href: "https://t.me/chemsolution12maa", icon: FaTelegramPlane, color: "#2aa3e0" },
-  { label: "WhatsApp", href: "https://wa.me/19852913802", icon: FaWhatsapp, color: "#25d366" },
+  { label: "Telegram", href: "https://t.me/Zhong5cla", icon: FaTelegramPlane, color: "#2aa3e0" },
+  { label: "WhatsApp", href: "https://wa.me/13468721280", icon: FaWhatsapp, color: "#25d366" },
 ];
 
 export default function SocialFloat() {
